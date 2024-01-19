@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.GetStartedFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:id="@+id/welcome_header"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_logo"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/welcome_to_notewave" />
+    <TextView
+        android:id="@+id/getstarted_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/welcome_header"
+        android:text="@string/app_name"
+        android:fontFamily="@font/inter_semibold"
+        android:textSize="24sp"/>
+    <TextView
+        android:id="@+id/getstarted_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_margin="4dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/getstarted_title"
+        android:text="@string/headline"
+        android:fontFamily="@font/inter_light"
+        android:textSize="16sp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btGetStarted"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/getstarted_description"
+        android:text="@string/get_started"
+        android:fontFamily="@font/inter_light"/>
+</RelativeLayout>

@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">NoteWave</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">NoteWave</string>
+    <!-- Onboarding Screen 1: Welcome to NoteWave -->
+    <string name="welcome_title">Get Organized with NoteWave</string>
+    <string name="welcome_description">Welcome aboard! NoteWave is your go-to app for seamless notes-taking and organization. Say goodbye to scattered thoughts, and hello to a well-organized digital space. Let\'s get started!</string>
+
+    <!-- Onboarding Screen 2: Capture Ideas Effortlessly -->
+    <string name="capture_title">Snap, Type, and Save!</string>
+    <string name="capture_description">With NoteWave, capturing your thoughts is a breeze. Whether it\'s a brilliant idea, a to-do list, or a moment of inspiration, easily type it out, and watch as your ideas come to life. Let NoteWave be your creative companion.</string>
+
+    <!-- Onboarding Screen 3: Organize Your World -->
+    <string name="organize_title">Structure Your Notes, Your Way</string>
+    <string name="organize_description">Take control of your digital chaos. With NoteWave, organizing your notes has never been more customizable. Create folders and watch as your thoughts fall into place. Welcome to a world where order meets creativity!</string>
+    <string name="welcome_to_notewave">Welcome to NoteWave</string>
+    <string name="next">Next</string>
+    <string name="headline">Uncomplicate Your Thoughts, Simplify Your Life!</string>
+    <string name="get_started">Get Started</string>
+    <string name="add_note">Add Note</string>
+    <!--Notes card-->
+    <string name="title">Title</string>
+    <string name="contents">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec orci suscipit, tristique orci sed, tempor dui. Sed luctus, sapien vitae ullamcorper lacinia, ligula odio dignissim velit, eget aliquet turpis tortor nec lorem. Sed vel vehicula massa. Proin nisi turpis, lacinia at semper vel, tincidunt in nibh. Cras id mi fermentum, fringilla velit non, congue tortor. Vestibulum lacinia pretium enim, et ornare elit consectetur non. Mauris finibus bibendum erat, id condimentum nisl congue ut.</string>
+    <string name="date">18–01–24</string>
+    <string name="lorem_text">Fusce enim risus, maximus eu rutrum elementum, fringilla at tellus. Cras nulla justo, tristique vitae mauris quis, scelerisque iaculis est.</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+
+</resources>
