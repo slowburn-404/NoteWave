@@ -8,7 +8,7 @@ import dev.borisochieng.notewave.databinding.ItemNotesBinding
 import dev.borisochieng.notewave.models.Notes
 
 class RvNotesAdapter(
-    private var notesList: List<Notes>,
+    private var notesList: MutableList<Notes> = mutableListOf(),
     private val onItemClickListener: RVNotesListOnItemClickListener
 ) : RecyclerView.Adapter<RvNotesAdapter.RvNotesViewHolder>() {
 
@@ -20,6 +20,11 @@ class RvNotesAdapter(
             binding.tvDate.text = notes.date
         }
 
+    }
+
+    fun updateList(newList: MutableList<Notes>) {
+        notesList = newList
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(

@@ -26,5 +26,6 @@
     <string name="edit_note">Edit Note</string>
     <string name="back">Back</string>
     <string name="save">Save</string>
+    <string name="demo">Note Wave Demo</string>
 
 </resources>
