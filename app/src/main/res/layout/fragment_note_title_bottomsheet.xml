@@ -36,16 +36,14 @@
             android:layout_gravity="center"
             android:layout_margin="4dp"
             android:hint="@string/untitled_note"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeWidthFocused="0dp">
+            app:boxStrokeWidth="1dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tIETAddTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:inputType="textCapWords|textShortMessage"
-                android:lineHeight="18dp" />
+                android:fontFamily="@font/inter_medium"
+                android:inputType="textCapWords|textShortMessage" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

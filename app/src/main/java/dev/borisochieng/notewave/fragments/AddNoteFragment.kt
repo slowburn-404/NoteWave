@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.ActionMode.Callback
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -15,7 +16,6 @@ import android.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -60,11 +60,12 @@ class AddNoteFragment : Fragment() {
         noteTitle =
             ContextCompat.getString(requireContext(), R.string.untitled_note)
 
+        Log.d("NoteTitle if null", noteTitle)
+
         materialToolbarAddNote.title = noteTitle
-        getTitleFromViewModel()
+
         showBottomSheet()
-
-
+        getTitleFromViewModel()
         mutateViewsBasedOnETFocus()
 
         materialToolbarAddNote.setNavigationOnClickListener {
@@ -117,7 +118,7 @@ class AddNoteFragment : Fragment() {
     }
 
     private fun showActionMode() {
-        val callback = object : ActionMode.Callback {
+        val callback = object : Callback {
 
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                 val inflater: MenuInflater? = mode?.menuInflater
@@ -152,8 +153,7 @@ class AddNoteFragment : Fragment() {
             }
         }
 
-        val actionMode = requireActivity().startActionMode(callback)
-        actionMode?.title = ContextCompat.getString(requireContext(), R.string.editing)
+        actionMode = materialToolbarAddNote.startActionMode(callback)
     }
 
     private fun showActionModeOnTextChange() {

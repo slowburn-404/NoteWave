@@ -22,7 +22,6 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolBarAddNote"
-                style="@style/Widget.App.Toolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="0dp"
@@ -30,7 +29,8 @@
                 app:layout_collapseMode="pin"
                 app:navigationContentDescription="@string/back"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="@string/untitled_note"/>
+                app:title="@string/untitled_note"
+                android:background="@android:color/transparent"/>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

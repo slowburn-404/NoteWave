@@ -22,7 +22,6 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolBarEditNote"
-                style="@style/Widget.App.Toolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="0dp"
