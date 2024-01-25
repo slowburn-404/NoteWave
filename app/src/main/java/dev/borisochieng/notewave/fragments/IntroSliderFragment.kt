@@ -20,8 +20,7 @@ class IntroSliderFragment : Fragment() {
     private lateinit var navController: NavController
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
 
@@ -30,16 +29,21 @@ class IntroSliderFragment : Fragment() {
         navController = findNavController()
 
         val onBoardingScreens = arrayListOf(
-            FirstIntroSliderScreenFragment(), SecondIntroSliderScreenFragment(), ThirdIntroSliderScreenFragment()
+            FirstIntroSliderScreenFragment(),
+            SecondIntroSliderScreenFragment(),
+            ThirdIntroSliderScreenFragment()
         )
-        val adapter =  VpIntroSliderAdapter(onBoardingScreens, requireActivity().supportFragmentManager, lifecycle)
+        val adapter = VpIntroSliderAdapter(
+            onBoardingScreens, requireActivity().supportFragmentManager, lifecycle
+        )
         val wormDotsIndicator: WormDotsIndicator = binding.introSliderWormDotsIndicator
         val onBoardingViewPager: ViewPager2 = binding.introSliderViewPager
 
         onBoardingViewPager.adapter = adapter
         wormDotsIndicator.attachTo(onBoardingViewPager)
 
-        binding.iVNext.setOnClickListener {
+        binding.iBSkip.setOnClickListener {
+
             navController.navigate(R.id.action_introSliderFragment_to_getStartedFragment)
         }
 

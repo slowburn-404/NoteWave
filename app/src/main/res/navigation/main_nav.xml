@@ -32,11 +32,21 @@
         android:label="fragment_notes_list"
         tools:layout="@layout/fragment_notes_list" >
         <action
+            android:id="@+id/action_notesListFragment_to_addNoteFragment"
+            app:destination="@id/addNoteFragment"
+            app:popUpTo="@id/notesListFragment"
+            app:popUpToInclusive="false" />
+        <action
             android:id="@+id/action_notesListFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment"
             app:popUpTo="@id/notesListFragment"
             app:popUpToInclusive="false" />
     </fragment>
+    <fragment
+        android:id="@+id/addNoteFragment"
+        android:name="dev.borisochieng.notewave.fragments.AddNoteFragment"
+        android:label="fragment_add_note"
+        tools:layout="@layout/fragment_add_note" />
     <fragment
         android:id="@+id/editNoteFragment"
         android:name="dev.borisochieng.notewave.fragments.EditNoteFragment"

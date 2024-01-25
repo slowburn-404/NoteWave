@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.EditNoteFragment">
+    tools:context=".fragments.AddNoteFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingTooolbarEditNote"
+            android:id="@+id/collapsingToolbarAddNote"
             style="?attr/collapsingToolbarLayoutMediumStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
@@ -21,40 +21,38 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolBarEditNote"
+                android:id="@+id/toolBarAddNote"
                 style="@style/Widget.App.Toolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="0dp"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:menu="@menu/save_note"
                 app:navigationContentDescription="@string/back"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="@string/app_name" />
+                app:title="@string/untitled_note"/>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tILEditNote"
+                android:id="@+id/tILAddNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/edit_note"
+                android:hint="@string/new_note"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp">
-
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tIETEditNote"
+                    android:id="@+id/tIETAddNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
@@ -64,5 +62,8 @@
 
 
         </RelativeLayout>
+
     </ScrollView>
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

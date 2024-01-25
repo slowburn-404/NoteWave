@@ -10,5 +10,5 @@ data class NotesContent(
     @PrimaryKey(autoGenerate = true) val noteId: Long,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "content") val content: String,
-    @ColumnInfo(name = "updatedAt") val updatedAt: String
+    @ColumnInfo(name = "updated_at") val updatedAt: String
 )

@@ -47,17 +47,14 @@
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
         <!--<item name="customSplashScreenTheme">@style/Theme.CustomSplashScreenTheme</item>-->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_arrow_back</item>
+        <item name="actionBarTheme">@style/Theme.Material3.Dark.NoActionBar</item>
     </style>
     <style name="Theme.CustomSplashScreenTheme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo</item>
         <item name="windowSplashScreenAnimationDuration">3000</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
-    </style>
-    <!--Edit notes contextual menu-->
-    <style name="Theme.App" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_done</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark</item>
     </style>
 </resources>

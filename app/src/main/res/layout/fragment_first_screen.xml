@@ -3,38 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:layout_margin="16dp"
     android:orientation="vertical"
     tools:context=".fragments.FirstIntroSliderScreenFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <ImageView
         android:id="@+id/welcome_header"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_margin="8dp"
-        android:src="@drawable/adding_notes"
-        android:layout_centerInParent="true"
-        android:contentDescription="@string/welcome_to_notewave" />
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="@string/welcome_to_notewave"
+        android:src="@drawable/adding_notes" />
+
     <TextView
         android:id="@+id/welcome_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/welcome_header"
-        android:text="@string/welcome_title"
+        android:layout_centerHorizontal="true"
+        android:padding="4dp"
         android:fontFamily="@font/inter_semibold"
-        android:textSize="24sp"/>
+        android:gravity="center"
+        android:text="@string/welcome_title"
+        android:textSize="24sp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:layout_margin="4dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/welcome_title"
-        android:text="@string/welcome_description"
+        android:layout_centerHorizontal="true"
         android:fontFamily="@font/inter_light"
-        android:textSize="16sp"/>
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="@string/welcome_description"
+        android:textSize="16sp" />
 </RelativeLayout>

@@ -27,5 +27,11 @@
     <string name="back">Back</string>
     <string name="save">Save</string>
     <string name="demo">Note Wave Demo</string>
+    <string name="untitled_note">Untitled Note</string>
+    <string name="new_note">New note</string>
+    <string name="skip">Skip</string>
+    <string name="editing">Editing…</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

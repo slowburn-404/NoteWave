@@ -39,12 +39,12 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
         rvNotes = binding.rvNotes
 
-        getNotesFromViewModel()
         setUpRecyclerView()
+        getNotesFromViewModel()
 
 
         binding.fabAddNote.setOnClickListener {
-            findNavController().navigate(R.id.action_notesListFragment_to_editNoteFragment)
+            findNavController().navigate(R.id.action_notesListFragment_to_addNoteFragment)
         }
 
 
@@ -68,6 +68,11 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
                 notesListAdapter.updateList(notesList)
             }
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        notesList.clear()
     }
 
     override fun onItemClick(item: Notes) {

@@ -48,6 +48,9 @@
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_arrow_back</item>
+        <item name="actionBarTheme">@style/Theme.Material3.Dark.NoActionBar</item>
     </style>
 
     <!--Splash screen-->
@@ -61,18 +64,14 @@
     <!--Top app bar-->
     <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
+        <item name="android:textSize">32sp</item>
+        <item name="fontFamily">@font/inter_semibold</item>
     </style>
 
     <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="fontFamily">@font/inter_black</item>
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textSize">32sp</item>
-    </style>
-    <!--Edit notes contextual menu-->
-    <style name="Theme.App" parent="Theme.Material3.Light.NoActionBar">
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_done</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Light</item>
     </style>
 
 </resources>

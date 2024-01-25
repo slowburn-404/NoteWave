@@ -14,6 +14,9 @@ class NotesViewModel(private val notesRepository: NotesRepository) : ViewModel()
 
     val getAllNotes: LiveData<MutableList<NotesContent>> = notesRepository.getAllNotes.asLiveData()
 
+    private val _noteTitle = MutableLiveData<String>()
+    val noteTitle: LiveData<String> get() = _noteTitle
+
 
     fun addNewNote(note: NotesContent) = viewModelScope.launch {
         notesRepository.addNewNote(note)
@@ -25,6 +28,10 @@ class NotesViewModel(private val notesRepository: NotesRepository) : ViewModel()
 
     fun deleteNote(note: NotesContent) = viewModelScope.launch {
         notesRepository.deleteNote(note)
+    }
+
+    fun setTitle(title: String) = viewModelScope.launch {
+        _noteTitle.value = title
     }
 }
 
