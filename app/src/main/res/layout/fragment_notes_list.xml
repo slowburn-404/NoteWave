@@ -10,15 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         app:liftOnScroll="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             style="?attr/collapsingToolbarLayoutMediumStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-            app:expandedTitleGravity="bottom"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:contentScrim="@android:color/transparent">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -28,31 +25,28 @@
                 android:background="@android:color/transparent"
                 android:elevation="0dp"
                 app:layout_collapseMode="pin"
-                app:title="@string/app_name"
-                app:titleTextAppearance="@style/customHeadlineAppearance" />
+                app:title="@string/my_notes"
+                app:titleTextAppearance="@style/TextAppearance.Material3.DisplayLarge"
+                app:popupTheme="@style/AppTheme" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvNotes"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                tools:listitem="@layout/item_notes" />
-        </RelativeLayout>
+                tools:listitem="@layout/item_notes"/>
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

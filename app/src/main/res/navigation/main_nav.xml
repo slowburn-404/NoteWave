@@ -51,5 +51,10 @@
         android:id="@+id/editNoteFragment"
         android:name="dev.borisochieng.notewave.fragments.EditNoteFragment"
         android:label="fragment_edit_note"
-        tools:layout="@layout/fragment_edit_note" />
+        tools:layout="@layout/fragment_edit_note" >
+        <argument
+            android:name="@string/edit_note"
+            app:argType="dev.borisochieng.notewave.models.NotesContentParcelable"
+            app:nullable="true" />
+    </fragment>
 </navigation>

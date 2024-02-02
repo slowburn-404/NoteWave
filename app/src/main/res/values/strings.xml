@@ -33,5 +33,7 @@
     <string name="editing">Editing…</string>
     <string name="enter_title">Enter Title</string>
     <string name="cancel">Cancel</string>
+    <string name="change_title">Change title</string>
+    <string name="my_notes">My Notes</string>
 
 </resources>

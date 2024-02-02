@@ -26,8 +26,15 @@
             android:layout_gravity="center"
             android:fontFamily="@font/inter_semibold"
             android:padding="4dp"
-            android:text="@string/enter_title"
+            android:text="@string/title"
             android:textSize="28sp" />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/inter_light"
+            android:padding="4dp"
+            android:text="@string/enter_title"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tILAddTitle"
@@ -54,7 +61,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/save" />
+            android:text="@string/save"/>
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

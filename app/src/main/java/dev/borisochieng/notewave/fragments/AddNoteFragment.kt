@@ -1,8 +1,6 @@
 package dev.borisochieng.notewave.fragments
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.ActionMode.Callback
 import androidx.fragment.app.Fragment
@@ -14,15 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ActionMode
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.database.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentAddNoteBinding
@@ -39,16 +36,16 @@ class AddNoteFragment : Fragment() {
     private lateinit var navController: NavController
     private lateinit var textInputLayoutAddNote: TextInputLayout
     private lateinit var textInputEditTextAddNote: TextInputEditText
-    private lateinit var collapsingToolbarLayoutAddNote: CollapsingToolbarLayout
     private lateinit var materialToolbarAddNote: MaterialToolbar
+    private lateinit var textViewDateUpdate: MaterialTextView
+    private lateinit var textInputLayoutTitle: TextInputLayout
+    private lateinit var textInputEditTextTitle: TextInputEditText
 
     private var actionMode: ActionMode? = null
 
-    private val notesViewModel: NotesViewModel by activityViewModels {
+    private val notesViewModel: NotesViewModel by viewModels {
         NotesViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
     }
-
-    private lateinit var noteTitle: String
 
 
     override fun onCreateView(
@@ -57,22 +54,13 @@ class AddNoteFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentAddNoteBinding.inflate(inflater, container, false)
         initViews()
-        noteTitle =
-            ContextCompat.getString(requireContext(), R.string.untitled_note)
-
-        Log.d("NoteTitle if null", noteTitle)
-
-        materialToolbarAddNote.title = noteTitle
-
         showBottomSheet()
-        getTitleFromViewModel()
         mutateViewsBasedOnETFocus()
 
         materialToolbarAddNote.setNavigationOnClickListener {
             navController.popBackStack()
         }
-
-
+        textViewDateUpdate.text = getCurrentDate()
 
 
         return binding.root
@@ -82,8 +70,10 @@ class AddNoteFragment : Fragment() {
         navController = findNavController()
         textInputLayoutAddNote = binding.tILAddNote
         textInputEditTextAddNote = binding.tIETAddNote
-        collapsingToolbarLayoutAddNote = binding.collapsingToolbarAddNote
         materialToolbarAddNote = binding.toolBarAddNote
+        textViewDateUpdate = binding.dateUpdated
+        textInputLayoutTitle = binding.tILAddNoteTitle
+        textInputEditTextTitle = binding.tIETAddNoteTitle
     }
 
     private fun mutateViewsBasedOnETFocus() {
@@ -91,14 +81,22 @@ class AddNoteFragment : Fragment() {
             if (hasFocus) {
                 textInputLayoutAddNote.hint = null
 
-                showActionModeOnTextChange()
+                showActionMode()
             } else {
                 textInputLayoutAddNote.hint =
-                    ContextCompat.getString(requireContext(), R.string.edit_note)
+                    ContextCompat.getString(requireContext(), R.string.add_note)
             }
 
             requireActivity().invalidateOptionsMenu()
 
+        }
+
+        textInputEditTextTitle.setOnFocusChangeListener { _, hasFocus ->
+            if(hasFocus) {
+                textInputEditTextTitle.hint = null
+
+                showActionMode()
+            }
         }
     }
 
@@ -111,7 +109,7 @@ class AddNoteFragment : Fragment() {
     private fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
+        val month = calendar.get(Calendar.MONTH) + 1
         val day = calendar.get(Calendar.DAY_OF_WEEK)
 
         return "$day-$month-$year"
@@ -135,11 +133,23 @@ class AddNoteFragment : Fragment() {
                 return when (item?.itemId) {
                     R.id.save -> {
                         // Handle save icon press
+                        textViewDateUpdate.text = getCurrentDate()
                         val note = prepareDataForViewModel()
                         sendNotesToViewModel(note)
+
                         Log.d("Note from edit text", note.toString())
+                        textInputEditTextAddNote.clearFocus()
                         Snackbar.make(binding.root, "Note saved.", Snackbar.LENGTH_SHORT).show()
                         mode?.finish()
+
+                        true
+                    }
+
+                    R.id.setTitle -> {
+                        textInputEditTextAddNote.clearFocus()
+                        showBottomSheet()
+                        mode?.finish()
+
 
                         true
                     }
@@ -156,29 +166,10 @@ class AddNoteFragment : Fragment() {
         actionMode = materialToolbarAddNote.startActionMode(callback)
     }
 
-    private fun showActionModeOnTextChange() {
-
-        textInputEditTextAddNote.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence?, start: Int, count: Int, after: Int
-            ) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                showActionMode()
-            }
-
-
-        })
-    }
-
     private fun prepareDataForViewModel(): NotesContent {
         val noteContent = textInputEditTextAddNote.text?.trim().toString()
+        val noteTitle = textInputEditTextTitle.text?.trim().toString()
         val date = getCurrentDate()
-
         Log.d("Note Title To ViewModel", noteTitle)
 
         return NotesContent(0, noteTitle, noteContent, date)
@@ -189,15 +180,6 @@ class AddNoteFragment : Fragment() {
     private fun showBottomSheet() {
         val bottomSheet = NoteTitleModalBottomSheet()
         bottomSheet.show(requireActivity().supportFragmentManager, NoteTitleModalBottomSheet.TAG)
-    }
-
-    private fun getTitleFromViewModel() {
-        notesViewModel.noteTitle.observe(viewLifecycleOwner, Observer { title ->
-            noteTitle = title
-            Log.d("Note Title From ViewModel", noteTitle)
-
-            materialToolbarAddNote.title = title
-        })
     }
 
     override fun onDestroy() {

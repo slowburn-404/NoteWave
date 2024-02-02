@@ -52,10 +52,11 @@
         <item name="actionModeStyle">@style/customActionMode</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="textAppearanceHeadlineLarge">@style/customHeadlineAppearance</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        -->
     </style>
 
     <!--Splash screen-->

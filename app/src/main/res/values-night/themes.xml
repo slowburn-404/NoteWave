@@ -50,10 +50,12 @@
         <item name="actionModeCloseDrawable">@drawable/ic_arrow_back</item>
         <item name="actionModeStyle">@style/customActionMode</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        -->
     </style>
     <style name="Theme.CustomSplashScreenTheme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
@@ -81,7 +83,7 @@
         <item name="cornerSize">10dp</item>
     </style>
 
-    <!--ActionModer-->
+    <!--ActionMode-->
     <style name="customActionMode" parent="Widget.Material3.ActionMode">
         <item name="background">@android:color/transparent</item>
     </style>

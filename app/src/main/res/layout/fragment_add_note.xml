@@ -12,51 +12,74 @@
         android:fitsSystemWindows="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbarAddNote"
-            style="?attr/collapsingToolbarLayoutMediumStyle"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolBarAddNote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:elevation="0dp"
-                android:minHeight="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:navigationContentDescription="@string/back"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="@string/untitled_note"
-                android:background="@android:color/transparent"/>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolBarAddNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:navigationContentDescription="@string/back"
+            app:navigationIcon="@drawable/ic_arrow_back" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tILAddNoteTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:hint="@string/title"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tIETAddNoteTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_semibold"
+                    android:inputType="textShortMessage|textCapWords"
+                    android:lineHeight="18dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dateUpdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tILAddNoteTitle"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/inter_extralight"
+                android:padding="4dp"
+                android:textSize="11sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tILAddNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/dateUpdated"
                 android:hint="@string/new_note"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tIETAddNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
-                    android:inputType="textMultiLine"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:lineHeight="18dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
