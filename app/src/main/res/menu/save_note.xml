@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/setTitle"
-        android:contentDescription="@string/change_title"
-        android:icon="@drawable/ic_add"
-        android:title="@string/title"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/save"
         android:contentDescription="@string/save"
         android:icon="@drawable/ic_done"

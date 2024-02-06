@@ -40,7 +40,8 @@
             android:id="@+id/action_notesListFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment"
             app:popUpTo="@id/notesListFragment"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="false"
+            />
     </fragment>
     <fragment
         android:id="@+id/addNoteFragment"
@@ -53,8 +54,7 @@
         android:label="fragment_edit_note"
         tools:layout="@layout/fragment_edit_note" >
         <argument
-            android:name="@string/edit_note"
-            app:argType="dev.borisochieng.notewave.models.NotesContentParcelable"
-            app:nullable="true" />
+            android:name="noteId"
+            app:argType="string" />
     </fragment>
 </navigation>

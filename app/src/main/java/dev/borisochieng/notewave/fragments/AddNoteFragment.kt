@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ActionMode
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -54,7 +53,6 @@ class AddNoteFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentAddNoteBinding.inflate(inflater, container, false)
         initViews()
-        showBottomSheet()
         mutateViewsBasedOnETFocus()
 
         materialToolbarAddNote.setNavigationOnClickListener {
@@ -82,11 +80,7 @@ class AddNoteFragment : Fragment() {
                 textInputLayoutAddNote.hint = null
 
                 showActionMode()
-            } else {
-                textInputLayoutAddNote.hint =
-                    ContextCompat.getString(requireContext(), R.string.add_note)
             }
-
             requireActivity().invalidateOptionsMenu()
 
         }
@@ -110,7 +104,7 @@ class AddNoteFragment : Fragment() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_WEEK)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
         return "$day-$month-$year"
     }
@@ -145,15 +139,6 @@ class AddNoteFragment : Fragment() {
                         true
                     }
 
-                    R.id.setTitle -> {
-                        textInputEditTextAddNote.clearFocus()
-                        showBottomSheet()
-                        mode?.finish()
-
-
-                        true
-                    }
-
                     else -> false
                 }
             }
@@ -174,12 +159,6 @@ class AddNoteFragment : Fragment() {
 
         return NotesContent(0, noteTitle, noteContent, date)
 
-
-    }
-
-    private fun showBottomSheet() {
-        val bottomSheet = NoteTitleModalBottomSheet()
-        bottomSheet.show(requireActivity().supportFragmentManager, NoteTitleModalBottomSheet.TAG)
     }
 
     override fun onDestroy() {

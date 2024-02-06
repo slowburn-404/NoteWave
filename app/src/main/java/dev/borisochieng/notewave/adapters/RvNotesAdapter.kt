@@ -6,6 +6,7 @@ import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import dev.borisochieng.notewave.databinding.ItemNotesBinding
 import dev.borisochieng.notewave.models.Notes
+import dev.borisochieng.notewave.models.NotesContent
 
 class RvNotesAdapter(
     private var notesList: MutableList<Notes> = mutableListOf(),
