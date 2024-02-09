@@ -43,6 +43,12 @@ class RvNotesAdapter(
         holder.itemView.setOnClickListener {
             onItemClickListener.onItemClick(item)
         }
+
+        holder.itemView.setOnLongClickListener {
+            onItemClickListener.onItemLongClick(item)
+            true
+        }
+
     }
 
     override fun getItemCount() = notesList.size

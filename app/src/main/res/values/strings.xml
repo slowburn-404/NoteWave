@@ -35,5 +35,6 @@
     <string name="cancel">Cancel</string>
     <string name="change_title">Change title</string>
     <string name="my_notes">My Notes</string>
+    <string name="delete">Delete</string>
 
 </resources>

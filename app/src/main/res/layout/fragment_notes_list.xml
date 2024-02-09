@@ -19,6 +19,7 @@
             app:contentScrim="@android:color/transparent">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/mTNotesList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"

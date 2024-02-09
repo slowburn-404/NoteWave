@@ -2,17 +2,21 @@ package dev.borisochieng.notewave.fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ActionMode
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
 import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.adapters.RvNotesAdapter
 import dev.borisochieng.notewave.database.NoteApplication
@@ -31,8 +35,10 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
     private lateinit var notesListAdapter: RvNotesAdapter
     private var notesListForRV = mutableListOf<Notes>()
     private var notesListFromViewModel = mutableListOf<NotesContent>()
+    private lateinit var materialToolbarNoteList: MaterialToolbar
 
     private lateinit var navController: NavController
+    private var actionMode: ActionMode? = null
 
     private val notesViewModel: NotesViewModel by activityViewModels {
         NotesViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
@@ -44,6 +50,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
         // Inflate the layout for this fragment
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
         rvNotes = binding.rvNotes
+        materialToolbarNoteList = binding.mTNotesList
 
         navController = findNavController()
 
@@ -101,6 +108,47 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
             notesListAdapter.updateList(notesListForRV)
         }
     }
+    private fun showActionMode() {
+        val callback = object : ActionMode.Callback {
+
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                val inflater: MenuInflater? = mode?.menuInflater
+                inflater?.inflate(R.menu.contextual_menu_notes_list, menu)
+
+                return true
+            }
+
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                return false
+            }
+
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                return when (item?.itemId) {
+                    R.id.delete -> {
+                        // Handle save icon press
+                        deleteSelectedNote()
+
+                        mode?.finish()
+
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode?) {
+                actionMode = null
+            }
+        }
+
+        actionMode = materialToolbarNoteList.startActionMode(callback)
+    }
+
+    private fun deleteSelectedNote() {
+
+
+    }
 
     override fun onPause() {
         super.onPause()
@@ -121,6 +169,10 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
 
         }
 
+    }
+
+    override fun onItemLongClick(item: Notes) {
+        showActionMode()
     }
 
     override fun onDestroy() {
