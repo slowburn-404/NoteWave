@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import dev.borisochieng.notewave.models.NotesContent
+import dev.borisochieng.notewave.models.Note
 import dev.borisochieng.notewave.repositories.NotesRepository
 import kotlinx.coroutines.launch
 
@@ -14,18 +14,18 @@ import kotlinx.coroutines.launch
 
 class NotesViewModel(private val notesRepository: NotesRepository) : ViewModel() {
 
-    val getAllNotes: LiveData<MutableList<NotesContent>> = notesRepository.getAllNotes.asLiveData()
+    val getAllNotes: LiveData<MutableList<Note>> = notesRepository.getAllNotes.asLiveData()
 
 
-    fun addNewNote(note: NotesContent) = viewModelScope.launch {
+    fun addNewNote(note: Note) = viewModelScope.launch {
         notesRepository.addNewNote(note)
     }
 
-    fun editNote(note: NotesContent) = viewModelScope.launch {
+    fun editNote(note: Note) = viewModelScope.launch {
         notesRepository.editNote(note)
     }
 
-    fun deleteNote(note: NotesContent) = viewModelScope.launch {
+    fun deleteNote(note: Note) = viewModelScope.launch {
         notesRepository.deleteNote(note)
     }
 

@@ -1,7 +1,7 @@
 package dev.borisochieng.notewave.repositories
 
 import androidx.annotation.WorkerThread
-import dev.borisochieng.notewave.models.NotesContent
+import dev.borisochieng.notewave.models.Note
 import dev.borisochieng.notewave.database.NotesDao
 import kotlinx.coroutines.flow.Flow
 
@@ -11,20 +11,20 @@ class NotesRepository(private val notesDao: NotesDao) {
         and the observed flow will notify the observer when
         the data has changed
     */
-    val getAllNotes: Flow<MutableList<NotesContent>> = notesDao.getAllNotes()
+    val getAllNotes: Flow<MutableList<Note>> = notesDao.getAllNotes()
 
     @WorkerThread
-    suspend fun addNewNote(note: NotesContent) {
+    suspend fun addNewNote(note: Note) {
         notesDao.addNewNote(note)
     }
 
     @WorkerThread
-    suspend fun editNote(note: NotesContent) {
+    suspend fun editNote(note: Note) {
         notesDao.editNote(note)
     }
 
     @WorkerThread
-    suspend fun deleteNote(note: NotesContent) {
+    suspend fun deleteNote(note: Note) {
         notesDao.deleteNote(note)
     }
 

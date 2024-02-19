@@ -32,9 +32,12 @@
     <string name="skip">Skip</string>
     <string name="editing">Editing…</string>
     <string name="enter_title">Enter Title</string>
-    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete">Delete</string>
     <string name="change_title">Change title</string>
     <string name="my_notes">My Notes</string>
-    <string name="delete">Delete</string>
+    <string name="delete_selected_items">Delete selected items</string>
+    <string name="delete_item_message">Are you sure you want to delete the selected items?</string>
 
 </resources>

@@ -3,37 +3,53 @@ package dev.borisochieng.notewave.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.databinding.ItemNotesBinding
-import dev.borisochieng.notewave.models.Notes
+import dev.borisochieng.notewave.models.Note
 
 class RvNotesAdapter(
-    private var notesList: MutableList<Notes> = mutableListOf(),
+    private var notesList: MutableList<Note> = mutableListOf(),
     private val onItemClickListener: RVNotesListOnItemClickListener,
-    private var multiSelectMode: Boolean = false,
-    //private val selectedItemsList: MutableSet<Notes> = mutableSetOf()
+    private var multiSelectMode: Boolean
 ) : RecyclerView.Adapter<RvNotesAdapter.RvNotesViewHolder>() {
+     lateinit var selectionTracker: SelectionTracker<Long>
 
     inner class RvNotesViewHolder(binding: ItemNotesBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         private val tvTitle: MaterialTextView = binding.tvTitle
         private val tvContent: TextView = binding.tvContent
         private val tvDate: TextView = binding.tvDate
         val notesCard: MaterialCardView = binding.notesCard
 
 
-        fun bind(notes: Notes) {
-            tvTitle.text = notes.title
-            tvContent.text = notes.content
-            tvDate.text = notes.date
+        fun bind(note: Note, isSelected: Boolean = false) {
+            tvTitle.text = note.title
+            tvContent.text = note.content
+            tvDate.text = note.updatedAt
+
+            //update selection state of the recycler view
+            itemView.isActivated = isSelected
+
+            itemView.tag = note.noteId
         }
+
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
+            object : ItemDetailsLookup.ItemDetails<Long>() {
+                override fun getPosition(): Int = adapterPosition
+                override fun getSelectionKey(): Long {
+                    return (itemView.tag as? Long) ?: RecyclerView.NO_ID
+                }
+            }
 
     }
 
-    fun updateList(newList: MutableList<Notes>) {
+    fun updateList(newList: MutableList<Note>) {
         notesList = newList
         notifyDataSetChanged()
     }
@@ -50,10 +66,14 @@ class RvNotesAdapter(
     override fun onBindViewHolder(holder: RvNotesViewHolder, position: Int) {
 
         val item = notesList[position]
+
+        //bind item data and selection state
         holder.bind(item)
+
         holder.itemView.setOnClickListener {
-            if(multiSelectMode) {
-                holder.notesCard.isChecked = !holder.notesCard.isChecked
+            if (multiSelectMode) {
+                //selectionTracker.select(position.toLong())
+                //holder.notesCard.isChecked = !holder.notesCard.isChecked
             } else {
                 onItemClickListener.onItemClick(item)
             }
@@ -62,7 +82,8 @@ class RvNotesAdapter(
 
         holder.itemView.setOnLongClickListener {
             multiSelectMode = true
-            holder.notesCard.isChecked = !holder.notesCard.isChecked
+            selectionTracker.select(position.toLong())
+            //holder.notesCard.isChecked = !holder.notesCard.isChecked
             onItemClickListener.onItemLongClick(item)
 
 
@@ -72,5 +93,8 @@ class RvNotesAdapter(
     }
 
     override fun getItemCount() = notesList.size
+
+    fun getItem(position: Int) = notesList[position]
+    fun getPosition(key: Long) = notesList.indexOfFirst { it.noteId == key }
 
 }

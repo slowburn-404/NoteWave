@@ -1,9 +1,9 @@
 package dev.borisochieng.notewave.recyclerview
 
-import dev.borisochieng.notewave.models.Notes
+import dev.borisochieng.notewave.models.Note
 
 interface RVNotesListOnItemClickListener {
-    fun onItemClick(item: Notes)
+    fun onItemClick(item: Note)
 
-    fun onItemLongClick(item: Notes)
+    fun onItemLongClick(item: Note)
 }

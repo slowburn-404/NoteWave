@@ -24,7 +24,7 @@ import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.database.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentEditNoteBinding
-import dev.borisochieng.notewave.models.NotesContent
+import dev.borisochieng.notewave.models.Note
 import dev.borisochieng.notewave.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.viewmodels.NotesViewModelFactory
 
@@ -51,7 +51,7 @@ class EditNoteFragment : Fragment() {
         NotesViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
     }
 
-    private var notesList = mutableListOf<NotesContent>()
+    private var notesList = mutableListOf<Note>()
 
 
     override fun onCreateView(
@@ -70,7 +70,7 @@ class EditNoteFragment : Fragment() {
         notesViewModel.getAllNotes.observe(requireActivity(), Observer { noteListFromViewModel ->
             //notesList.clear()
             noteListFromViewModel?.forEach { note ->
-                notesList.add(NotesContent(note.noteId, note.title, note.content, note.updatedAt))
+                notesList.add(Note(note.noteId, note.title, note.content, note.updatedAt))
             }
         })
         val noteIdFromNotesListFragment = navArgs.noteId
@@ -106,7 +106,7 @@ class EditNoteFragment : Fragment() {
         navController = findNavController()
     }
 
-    private fun updateViewModel(note: NotesContent) {
+    private fun updateViewModel(note: Note) {
         notesViewModel.editNote(note)
     }
 
@@ -169,7 +169,7 @@ class EditNoteFragment : Fragment() {
         actionMode = materialToolbarEditNote.startActionMode(callback)
     }
 
-    private fun filterNotesList(noteList: MutableList<NotesContent>, id: String): NotesContent? {
+    private fun filterNotesList(noteList: MutableList<Note>, id: String): Note? {
 
         return noteList.find {
             it.noteId.toString() == id
@@ -185,12 +185,12 @@ class EditNoteFragment : Fragment() {
         return "$day-$month-$year"
     }
 
-    private fun prepareDataForViewModel(): NotesContent {
+    private fun prepareDataForViewModel(): Note {
         val noteId = navArgs.noteId.toLong()
         val title = textInputEditTextTitle.text?.trim().toString()
         val content = textInputEditTextEditNote.text?.trim().toString()
 
-        return NotesContent(noteId, title, content, getCurrentDate())
+        return Note(noteId, title, content, getCurrentDate())
     }
 
     override fun onDestroy() {

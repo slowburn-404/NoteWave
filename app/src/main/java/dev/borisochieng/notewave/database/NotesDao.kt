@@ -6,20 +6,20 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import dev.borisochieng.notewave.models.NotesContent
+import dev.borisochieng.notewave.models.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotesDao {
     @Query("SELECT * FROM notes_table ORDER BY noteId DESC")
-    fun getAllNotes(): Flow<MutableList<NotesContent>>
+    fun getAllNotes(): Flow<MutableList<Note>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addNewNote(note: NotesContent)
+    suspend fun addNewNote(note: Note)
 
     @Update
-    suspend fun editNote(notes: NotesContent)
+    suspend fun editNote(notes: Note)
 
     @Delete
-    suspend fun deleteNote(note: NotesContent)
+    suspend fun deleteNote(note: Note)
 }

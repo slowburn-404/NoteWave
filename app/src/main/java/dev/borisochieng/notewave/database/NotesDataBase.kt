@@ -6,13 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import dev.borisochieng.notewave.models.NotesContent
+import dev.borisochieng.notewave.models.Note
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 import kotlin.concurrent.Volatile
 
 @Database(
-    entities = [NotesContent::class],
+    entities = [Note::class],
     version = 2,
     exportSchema = false,
 )

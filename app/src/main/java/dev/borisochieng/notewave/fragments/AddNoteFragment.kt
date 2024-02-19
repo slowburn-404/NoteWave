@@ -22,7 +22,7 @@ import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.database.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentAddNoteBinding
-import dev.borisochieng.notewave.models.NotesContent
+import dev.borisochieng.notewave.models.Note
 import dev.borisochieng.notewave.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.viewmodels.NotesViewModelFactory
 import java.util.Calendar
@@ -95,7 +95,7 @@ class AddNoteFragment : Fragment() {
     }
 
 
-    private fun sendNotesToViewModel(note: NotesContent) {
+    private fun sendNotesToViewModel(note: Note) {
         notesViewModel.addNewNote(note)
         Log.d("Note to viewmodel:", note.toString())
     }
@@ -151,13 +151,13 @@ class AddNoteFragment : Fragment() {
         actionMode = materialToolbarAddNote.startActionMode(callback)
     }
 
-    private fun prepareDataForViewModel(): NotesContent {
+    private fun prepareDataForViewModel(): Note {
         val noteContent = textInputEditTextAddNote.text?.trim().toString()
         val noteTitle = textInputEditTextTitle.text?.trim().toString()
         val date = getCurrentDate()
         Log.d("Note Title To ViewModel", noteTitle)
 
-        return NotesContent(0, noteTitle, noteContent, date)
+        return Note(0, noteTitle, noteContent, date)
 
     }
 
