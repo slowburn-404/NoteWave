@@ -80,8 +80,9 @@ class RvNotesAdapter(
                     return@setOnClickListener
                 }
                 selectionTracker.select(item.noteId)
+                onItemClickListener.onItemClick(item)
             }
-            onItemClickListener.onItemClick(item)
+
 
         }
 

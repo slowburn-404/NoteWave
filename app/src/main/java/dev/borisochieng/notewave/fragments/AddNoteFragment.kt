@@ -1,5 +1,6 @@
 package dev.borisochieng.notewave.fragments
 
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode.Callback
@@ -25,7 +26,8 @@ import dev.borisochieng.notewave.databinding.FragmentAddNoteBinding
 import dev.borisochieng.notewave.models.Note
 import dev.borisochieng.notewave.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.viewmodels.NotesViewModelFactory
-import java.util.Calendar
+import java.util.Locale
+import android.icu.util.Calendar
 
 class AddNoteFragment : Fragment() {
 
@@ -102,11 +104,9 @@ class AddNoteFragment : Fragment() {
 
     private fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val formatter = SimpleDateFormat("dd MMMM yyyy h:mm a", Locale.getDefault())
 
-        return "$day-$month-$year"
+        return formatter.format(calendar.time)
     }
 
     private fun showActionMode() {

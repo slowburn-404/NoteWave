@@ -73,11 +73,15 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
             navController.navigate(R.id.action_notesListFragment_to_addNoteFragment)
         }
 
-        val selectionObserver = object: SelectionTracker.SelectionObserver<Long>() {
+        val selectionObserver = object : SelectionTracker.SelectionObserver<Long>() {
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
                 updateSelectedNotesList()
                 updateActionModeTitle()
+
+                if (!selectionTracker.hasSelection()) {
+                    actionMode?.finish()
+                }
             }
         }
         selectionTracker.addObserver(selectionObserver)
@@ -153,6 +157,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
                 val inflater: MenuInflater? = mode?.menuInflater
                 inflater?.inflate(R.menu.contextual_menu_notes_list, menu)
 
+
                 return true
             }
 
@@ -192,7 +197,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     }
 
     private fun updateActionModeTitle() {
-        actionMode?.title = selectedNotesList.size.toString()
+        actionMode?.title = resources.getQuantityString(R.plurals.selected_items,selectedNotesList.size, selectedNotesList.size)
     }
 
     private fun showDialog() {
@@ -256,7 +261,6 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     }
 
     override fun onItemClick(item: Note) {
-        //TODO("Refactor to use ID instead of title")
 
         val note = getClickedNote(item)
         note?.let {

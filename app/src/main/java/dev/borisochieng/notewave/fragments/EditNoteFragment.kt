@@ -1,5 +1,6 @@
 package dev.borisochieng.notewave.fragments
 
+import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,7 @@ import dev.borisochieng.notewave.databinding.FragmentEditNoteBinding
 import dev.borisochieng.notewave.models.Note
 import dev.borisochieng.notewave.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.viewmodels.NotesViewModelFactory
+import java.util.Locale
 
 
 class EditNoteFragment : Fragment() {
@@ -178,11 +180,9 @@ class EditNoteFragment : Fragment() {
 
     private fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        return "$day-$month-$year"
+        val formatter = SimpleDateFormat("dd MMMM yyyy h:mm a", Locale.getDefault())
+        
+        return formatter.format(calendar.time)
     }
 
     private fun prepareDataForViewModel(): Note {
