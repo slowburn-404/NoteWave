@@ -1,7 +1,6 @@
 package dev.borisochieng.notewave.fragments
 
 import android.os.Bundle
-import android.os.NetworkOnMainThreadException
 import android.util.Log
 import android.view.ActionMode
 import androidx.fragment.app.Fragment
@@ -30,10 +29,12 @@ import dev.borisochieng.notewave.models.Note
 import dev.borisochieng.notewave.recyclerview.RVNotesItemDetailsLookup
 import dev.borisochieng.notewave.recyclerview.RVNotesItemKeyProvider
 import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemClickListener
+import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemLongClickListener
 import dev.borisochieng.notewave.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.viewmodels.NotesViewModelFactory
 
-class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
+class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
+    RVNotesListOnItemLongClickListener {
     private var _binding: FragmentNotesListBinding? = null
     private val binding get() = _binding!!
 
@@ -41,8 +42,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
     private lateinit var notesListAdapter: RvNotesAdapter
     private var notesListForRV = mutableListOf<Note>()
     private var notesListFromViewModel = mutableListOf<Note>()
-    private var selectedNotesIDList = mutableListOf<Long>()
-    private var selectedNotesList = mutableListOf<Note>()
+    private lateinit var selectedNotesList: MutableList<Note>
     private lateinit var materialToolbarNoteList: MaterialToolbar
     private lateinit var selectionTracker: SelectionTracker<Long>
 
@@ -61,6 +61,8 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
         rvNotes = binding.rvNotes
         materialToolbarNoteList = binding.mTNotesList
 
+        selectedNotesList = mutableListOf()
+
         navController = findNavController()
 
         setUpRecyclerView()
@@ -71,10 +73,20 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
             navController.navigate(R.id.action_notesListFragment_to_addNoteFragment)
         }
 
+        val selectionObserver = object: SelectionTracker.SelectionObserver<Long>() {
+            override fun onSelectionChanged() {
+                super.onSelectionChanged()
+                updateSelectedNotesList()
+                updateActionModeTitle()
+            }
+        }
+        selectionTracker.addObserver(selectionObserver)
+
         //restore tracker if needed
         savedInstanceState?.let {
             selectionTracker.onRestoreInstanceState(it)
         }
+
 
 
         return binding.root
@@ -83,7 +95,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
     private fun setUpRecyclerView() {
 
 
-        notesListAdapter = RvNotesAdapter(notesListForRV, this, false)
+        notesListAdapter = RvNotesAdapter(notesListForRV, this, this)
         rvNotes.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rvNotes.setHasFixedSize(true)
         rvNotes.adapter = notesListAdapter
@@ -152,9 +164,14 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
                 return when (item?.itemId) {
                     R.id.delete -> {
                         // Handle delete icon press
-                        showDialog()
+                        if (selectedNotesList.isNotEmpty()) {
+                            showDialog()
+                            mode?.finish()
+                        } else {
+                            Snackbar.make(binding.root, "No notes selected", Snackbar.LENGTH_SHORT)
+                                .show()
+                        }
 
-                        mode?.finish()
 
                         true
                     }
@@ -165,14 +182,17 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
 
             override fun onDestroyActionMode(mode: ActionMode?) {
                 actionMode = null
-                selectedNotesIDList.clear()
+                selectedNotesList.clear()
                 rvNotes.adapter?.notifyDataSetChanged()
 
             }
         }
 
         actionMode = materialToolbarNoteList.startActionMode(callback)
-        actionMode?.title = selectedNotesIDList.size.toString()
+    }
+
+    private fun updateActionModeTitle() {
+        actionMode?.title = selectedNotesList.size.toString()
     }
 
     private fun showDialog() {
@@ -180,61 +200,65 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
             .setTitle(getString(R.string.delete_selected_items))
             .setMessage(getString(R.string.delete_item_message))
             .setPositiveButton(resources.getString(R.string.yes)) { dialog, _ ->
-                deleteNote()
+                deleteSelectedNotes()
                 dialog.dismiss()
             }
             .setNegativeButton(resources.getString(R.string.no)) { dialog, _ ->
                 dialog.dismiss()
+                selectionTracker.clearSelection()
+                actionMode?.finish()
             }.show()
     }
 
-    private fun deleteNote() {
-        val selectedNotes =  getSelectedNotesFromViewModel()
-        selectedNotes.forEach { selectedNote ->
-            if (selectedNote != null) {
-                notesViewModel.deleteNote(selectedNote)
-                actionMode?.finish()
-                Snackbar.make(binding.root, "Notes deleted", Snackbar.LENGTH_SHORT).show()
+    private fun deleteSelectedNotes() {
+        val selectedNotes = getSelectedNotesFromViewModel()
+
+        if (selectedNotes.isNotEmpty()) {
+            selectedNotes.forEach { selectedNote ->
+                selectedNote?.let {
+                    notesViewModel.deleteNote(selectedNote)
+                }
             }
-            else {
-                Snackbar.make(binding.root, "No notes selected", Snackbar.LENGTH_SHORT).show()
-                actionMode?.finish()
-            }
+            actionMode?.finish()
+            Snackbar.make(binding.root, "Notes deleted", Snackbar.LENGTH_SHORT).show()
+        } else {
+            Snackbar.make(binding.root, "No notes selected", Snackbar.LENGTH_SHORT).show()
         }
     }
 
     private fun getSelectedNotes(): MutableList<Long> {
-        selectionTracker.addObserver(
-            object : SelectionTracker.SelectionObserver<Long>() {
-                override fun onSelectionChanged() {
-                    super.onSelectionChanged()
-                    selectedNotesIDList = selectionTracker.selection.toMutableList()
-                }
-
-            }
-        )
-        return selectedNotesIDList
+        return selectionTracker.selection.toMutableList()
     }
-    private fun getSelectedNotesFromViewModel(): MutableList<Note?> {
+
+    private fun getSelectedNotesFromViewModel(): List<Note?> {
         val selectedNotesIDs = getSelectedNotes()
-        val selectedNotesList = selectedNotesIDs.mapTo(mutableListOf()) { noteId ->
-            notesListFromViewModel.find {note ->
-                noteId == note.noteId
+        return selectedNotesIDs.mapNotNull { noteID ->
+            notesListFromViewModel.find { note ->
+                noteID == note.noteId
             }
         }
-        return selectedNotesList
+    }
+
+    private fun updateSelectedNotesList() {
+        selectedNotesList.clear()
+        val selectedNotesIDs = getSelectedNotes()
+        selectedNotesList.addAll(selectedNotesIDs.mapNotNull { noteID ->
+            notesListFromViewModel.find { note ->
+                noteID == note.noteId
+            }
+        })
     }
 
     override fun onPause() {
         super.onPause()
         notesListForRV.clear()
+        selectedNotesList.clear()
     }
 
     override fun onItemClick(item: Note) {
+        //TODO("Refactor to use ID instead of title")
 
-        val note = notesListFromViewModel.find { note ->
-            note.title == item.title
-        }
+        val note = getClickedNote(item)
         note?.let {
             val action =
                 NotesListFragmentDirections.actionNotesListFragmentToEditNoteFragment(note.noteId.toString())
@@ -246,6 +270,12 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
 
     }
 
+    private fun getClickedNote(item: Note): Note? {
+        return notesListFromViewModel.find { note ->
+            note.noteId == item.noteId
+        }
+    }
+
     override fun onItemLongClick(item: Note) {
         showActionMode()
     }
@@ -253,6 +283,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        selectionTracker.clearSelection()
     }
 
 }

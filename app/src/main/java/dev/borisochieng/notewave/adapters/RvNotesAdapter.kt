@@ -11,13 +11,14 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.databinding.ItemNotesBinding
 import dev.borisochieng.notewave.models.Note
+import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemLongClickListener
 
 class RvNotesAdapter(
     private var notesList: MutableList<Note> = mutableListOf(),
     private val onItemClickListener: RVNotesListOnItemClickListener,
-    private var multiSelectMode: Boolean
+    private val onItemLongClickListener: RVNotesListOnItemLongClickListener
 ) : RecyclerView.Adapter<RvNotesAdapter.RvNotesViewHolder>() {
-     lateinit var selectionTracker: SelectionTracker<Long>
+    lateinit var selectionTracker: SelectionTracker<Long>
 
     inner class RvNotesViewHolder(binding: ItemNotesBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -35,6 +36,7 @@ class RvNotesAdapter(
 
             //update selection state of the recycler view
             itemView.isActivated = isSelected
+            notesCard.isChecked = isSelected
 
             itemView.tag = note.noteId
         }
@@ -71,30 +73,35 @@ class RvNotesAdapter(
         holder.bind(item)
 
         holder.itemView.setOnClickListener {
-            if (multiSelectMode) {
-                //selectionTracker.select(position.toLong())
-                //holder.notesCard.isChecked = !holder.notesCard.isChecked
+            if (selectionTracker.isSelected(item.noteId)) {
+                selectionTracker.deselect(item.noteId)
             } else {
-                onItemClickListener.onItemClick(item)
+                if (selectionTracker.hasSelection()) {
+                    return@setOnClickListener
+                }
+                selectionTracker.select(item.noteId)
             }
+            onItemClickListener.onItemClick(item)
 
         }
 
         holder.itemView.setOnLongClickListener {
-            multiSelectMode = true
-            selectionTracker.select(position.toLong())
-            //holder.notesCard.isChecked = !holder.notesCard.isChecked
-            onItemClickListener.onItemLongClick(item)
-
+            onItemLongClickListener.onItemLongClick(item)
 
             true
         }
 
-    }
+        holder.notesCard.isChecked = selectionTracker.isSelected(item.noteId)
 
-    override fun getItemCount() = notesList.size
+    }
 
     fun getItem(position: Int) = notesList[position]
     fun getPosition(key: Long) = notesList.indexOfFirst { it.noteId == key }
+
+    override fun getItemId(position: Int): Long {
+        return notesList[position].noteId
+    }
+
+    override fun getItemCount() = notesList.size
 
 }
