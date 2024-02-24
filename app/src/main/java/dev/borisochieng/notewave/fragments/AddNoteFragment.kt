@@ -114,7 +114,7 @@ class AddNoteFragment : Fragment() {
 
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                 val inflater: MenuInflater? = mode?.menuInflater
-                inflater?.inflate(R.menu.save_note, menu)
+                inflater?.inflate(R.menu.contextual_menu_save_note, menu)
 
                 return true
             }

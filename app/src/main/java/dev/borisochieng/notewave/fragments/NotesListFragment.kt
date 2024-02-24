@@ -40,7 +40,6 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
     private lateinit var rvNotes: RecyclerView
     private lateinit var notesListAdapter: RvNotesAdapter
-    private var notesListForRV = mutableListOf<Note>()
     private var notesListFromViewModel = mutableListOf<Note>()
     private lateinit var selectedNotesList: MutableList<Note>
     private lateinit var materialToolbarNoteList: MaterialToolbar
@@ -97,9 +96,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     }
 
     private fun setUpRecyclerView() {
-
-
-        notesListAdapter = RvNotesAdapter(notesListForRV, this, this)
+        notesListAdapter = RvNotesAdapter(notesListFromViewModel, this, this)
         rvNotes.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rvNotes.setHasFixedSize(true)
         rvNotes.adapter = notesListAdapter
@@ -118,7 +115,6 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     private fun getNotesFromViewModel() {
         notesViewModel.getAllNotes.observe(requireActivity(), Observer { noteList ->
             noteList?.let {
-                notesListForRV.clear()
                 notesListFromViewModel.clear()
                 it.forEach { note ->
                     notesListFromViewModel.add(
@@ -130,33 +126,17 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
                         )
                     )
                 }
-                addNotesToRV(notesListFromViewModel)
+                notesListAdapter.updateList(notesListFromViewModel)
             }
 
         })
     }
 
-    private fun addNotesToRV(noteList: MutableList<Note>) {
-        noteList.forEach { note ->
-            notesListForRV.add(
-                Note(
-                    noteId = note.noteId,
-                    title = note.title,
-                    content = note.content,
-                    updatedAt = note.updatedAt
-                )
-            )
-            notesListAdapter.updateList(notesListForRV)
-        }
-    }
-
     private fun showActionMode() {
         val callback = object : ActionMode.Callback {
-
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                 val inflater: MenuInflater? = mode?.menuInflater
                 inflater?.inflate(R.menu.contextual_menu_notes_list, menu)
-
 
                 return true
             }
@@ -169,14 +149,27 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
                 return when (item?.itemId) {
                     R.id.delete -> {
                         // Handle delete icon press
-                        if (selectedNotesList.isNotEmpty()) {
-                            showDialog()
-                            mode?.finish()
-                        } else {
-                            Snackbar.make(binding.root, "No notes selected", Snackbar.LENGTH_SHORT)
-                                .show()
-                        }
+                        showDialog()
+                        mode?.finish()
 
+                        true
+                    }
+
+                    R.id.select_all -> {
+                        /*
+                        If all items are selected, clear selection else
+                        select all
+                        */
+                        if (selectedNotesList.size == notesListFromViewModel.size) {
+                            selectionTracker.clearSelection()
+
+                        } else {
+                            notesListFromViewModel.forEach { note ->
+                                selectionTracker.select(note.noteId)
+
+                            }
+
+                        }
 
                         true
                     }
@@ -197,7 +190,11 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     }
 
     private fun updateActionModeTitle() {
-        actionMode?.title = resources.getQuantityString(R.plurals.selected_items,selectedNotesList.size, selectedNotesList.size)
+        actionMode?.title = resources.getQuantityString(
+            R.plurals.selected_items,
+            selectedNotesList.size,
+            selectedNotesList.size
+        )
     }
 
     private fun showDialog() {
@@ -226,8 +223,6 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
             }
             actionMode?.finish()
             Snackbar.make(binding.root, "Notes deleted", Snackbar.LENGTH_SHORT).show()
-        } else {
-            Snackbar.make(binding.root, "No notes selected", Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -256,12 +251,11 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
     override fun onPause() {
         super.onPause()
-        notesListForRV.clear()
         selectedNotesList.clear()
+        selectionTracker.clearSelection()
     }
 
     override fun onItemClick(item: Note) {
-
         val note = getClickedNote(item)
         note?.let {
             val action =
@@ -269,7 +263,6 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
             navController.navigate(action)
 
             Log.d("Note ID", note.noteId.toString())
-
         }
 
     }

@@ -38,6 +38,7 @@
     <string name="my_notes">My Notes</string>
     <string name="delete_selected_items">Delete selected items</string>
     <string name="delete_item_message">Are you sure you want to delete the selected items?</string>
+    <string name="select_all">Select all</string>
     <plurals name="selected_items">
         <item quantity="one">%d Item selected</item>
         <item quantity="other">%d Items selected</item>

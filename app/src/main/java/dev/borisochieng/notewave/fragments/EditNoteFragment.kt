@@ -70,7 +70,6 @@ class EditNoteFragment : Fragment() {
         }
 
         notesViewModel.getAllNotes.observe(requireActivity(), Observer { noteListFromViewModel ->
-            //notesList.clear()
             noteListFromViewModel?.forEach { note ->
                 notesList.add(Note(note.noteId, note.title, note.content, note.updatedAt))
             }
@@ -90,10 +89,6 @@ class EditNoteFragment : Fragment() {
         textInputLayoutEditNote.hint = null
 
         mutateViewsBasedOnETFocus()
-
-
-
-
 
         return binding.root
     }
@@ -137,7 +132,7 @@ class EditNoteFragment : Fragment() {
 
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                 val inflater: MenuInflater? = mode?.menuInflater
-                inflater?.inflate(R.menu.save_note, menu)
+                inflater?.inflate(R.menu.contextual_menu_save_note, menu)
 
                 return true
             }
