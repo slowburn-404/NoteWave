@@ -1,8 +1,8 @@
-package dev.borisochieng.notewave.repositories
+package dev.borisochieng.notewave.data
 
 import androidx.annotation.WorkerThread
-import dev.borisochieng.notewave.models.Note
-import dev.borisochieng.notewave.database.NotesDao
+import dev.borisochieng.notewave.data.models.Note
+import dev.borisochieng.notewave.data.local.database.NotesDao
 import kotlinx.coroutines.flow.Flow
 
 class NotesRepository(private val notesDao: NotesDao) {

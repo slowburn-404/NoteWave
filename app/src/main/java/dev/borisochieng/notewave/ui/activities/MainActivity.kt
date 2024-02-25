@@ -1,4 +1,4 @@
-package dev.borisochieng.notewave.activities
+package dev.borisochieng.notewave.ui.activities
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity

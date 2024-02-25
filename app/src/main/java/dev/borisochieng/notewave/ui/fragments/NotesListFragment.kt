@@ -1,4 +1,4 @@
-package dev.borisochieng.notewave.fragments
+package dev.borisochieng.notewave.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -22,16 +22,16 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dev.borisochieng.notewave.R
-import dev.borisochieng.notewave.adapters.RvNotesAdapter
-import dev.borisochieng.notewave.database.NoteApplication
+import dev.borisochieng.notewave.ui.recyclerview.adapters.RvNotesAdapter
+import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentNotesListBinding
-import dev.borisochieng.notewave.models.Note
-import dev.borisochieng.notewave.recyclerview.RVNotesItemDetailsLookup
-import dev.borisochieng.notewave.recyclerview.RVNotesItemKeyProvider
-import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemClickListener
-import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemLongClickListener
-import dev.borisochieng.notewave.viewmodels.NotesViewModel
-import dev.borisochieng.notewave.viewmodels.NotesViewModelFactory
+import dev.borisochieng.notewave.data.models.Note
+import dev.borisochieng.notewave.ui.recyclerview.RVNotesItemDetailsLookup
+import dev.borisochieng.notewave.ui.recyclerview.RVNotesItemKeyProvider
+import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemClickListener
+import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemLongClickListener
+import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
+import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
 
 class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     RVNotesListOnItemLongClickListener {
@@ -147,14 +147,14 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
+                    // Handle delete icon press
                     R.id.delete -> {
-                        // Handle delete icon press
                         showDialog()
                         mode?.finish()
 
                         true
                     }
-
+                    //Handle select icon press
                     R.id.select_all -> {
                         /*
                         If all items are selected, clear selection else
@@ -222,7 +222,13 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
                 }
             }
             actionMode?.finish()
-            Snackbar.make(binding.root, "Notes deleted", Snackbar.LENGTH_SHORT).show()
+            Snackbar
+                .make(
+                    binding.root,
+                    resources.getString(R.string.notes_deleted),
+                    Snackbar.LENGTH_SHORT
+                )
+                .show()
         }
     }
 
@@ -259,7 +265,9 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
         val note = getClickedNote(item)
         note?.let {
             val action =
-                NotesListFragmentDirections.actionNotesListFragmentToEditNoteFragment(note.noteId.toString())
+                NotesListFragmentDirections.actionNotesListFragmentToEditNoteFragment(
+                    note.noteId.toString()
+                )
             navController.navigate(action)
 
             Log.d("Note ID", note.noteId.toString())

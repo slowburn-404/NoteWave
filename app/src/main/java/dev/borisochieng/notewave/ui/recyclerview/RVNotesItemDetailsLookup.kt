@@ -1,9 +1,9 @@
-package dev.borisochieng.notewave.recyclerview
+package dev.borisochieng.notewave.ui.recyclerview
 
 import android.view.MotionEvent
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
-import dev.borisochieng.notewave.adapters.RvNotesAdapter
+import dev.borisochieng.notewave.ui.recyclerview.adapters.RvNotesAdapter
 
 class RVNotesItemDetailsLookup(private val recyclerView: RecyclerView) : ItemDetailsLookup<Long>() {
 

@@ -1,4 +1,4 @@
-package dev.borisochieng.notewave.database
+package dev.borisochieng.notewave.data.local.database
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import dev.borisochieng.notewave.models.Note
+import dev.borisochieng.notewave.data.models.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,4 +1,4 @@
-package dev.borisochieng.notewave.models
+package dev.borisochieng.notewave.data.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

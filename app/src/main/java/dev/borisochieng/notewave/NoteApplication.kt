@@ -1,10 +1,8 @@
-package dev.borisochieng.notewave.database
+package dev.borisochieng.notewave
 
 import android.app.Application
-import android.content.Context
-import dev.borisochieng.notewave.repositories.NotesRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import dev.borisochieng.notewave.data.local.database.NotesDataBase
+import dev.borisochieng.notewave.data.NotesRepository
 
 /*
     Since only one instance of the database
@@ -14,8 +12,7 @@ import kotlinx.coroutines.SupervisorJob
     and not constructed every time
  */
 class NoteApplication: Application() {
-
-
-    val notesDataBase by lazy { NotesDataBase.getDatabase(this) }
+    private val notesDataBase by lazy { NotesDataBase.getDatabase(this) }
     val notesRepository by lazy { NotesRepository(notesDataBase.notesDAO()) }
+
 }

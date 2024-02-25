@@ -1,17 +1,17 @@
-package dev.borisochieng.notewave.adapters
+package dev.borisochieng.notewave.ui.recyclerview.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
-import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemClickListener
+import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.databinding.ItemNotesBinding
-import dev.borisochieng.notewave.models.Note
-import dev.borisochieng.notewave.recyclerview.RVNotesListOnItemLongClickListener
+import dev.borisochieng.notewave.data.models.Note
+import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemLongClickListener
 
 class RvNotesAdapter(
     private var notesList: MutableList<Note> = mutableListOf(),
@@ -58,7 +58,7 @@ class RvNotesAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
-    ): RvNotesAdapter.RvNotesViewHolder {
+    ): RvNotesViewHolder {
         val itemBinding =
             ItemNotesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 

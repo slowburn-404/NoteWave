@@ -1,4 +1,4 @@
-package dev.borisochieng.notewave.fragments
+package dev.borisochieng.notewave.ui.fragments
 
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
@@ -23,11 +23,11 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.R
-import dev.borisochieng.notewave.database.NoteApplication
+import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentEditNoteBinding
-import dev.borisochieng.notewave.models.Note
-import dev.borisochieng.notewave.viewmodels.NotesViewModel
-import dev.borisochieng.notewave.viewmodels.NotesViewModelFactory
+import dev.borisochieng.notewave.data.models.Note
+import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
+import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
 import java.util.Locale
 
 

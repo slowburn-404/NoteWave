@@ -1,4 +1,4 @@
-package dev.borisochieng.notewave.database
+package dev.borisochieng.notewave.data.local.database
 
 import android.content.Context
 import androidx.room.Database
@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import dev.borisochieng.notewave.models.Note
+import dev.borisochieng.notewave.data.models.Note
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 import kotlin.concurrent.Volatile

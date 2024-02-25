@@ -1,7 +1,7 @@
-package dev.borisochieng.notewave.recyclerview
+package dev.borisochieng.notewave.ui.recyclerview
 
 import androidx.recyclerview.selection.ItemKeyProvider
-import dev.borisochieng.notewave.adapters.RvNotesAdapter
+import dev.borisochieng.notewave.ui.recyclerview.adapters.RvNotesAdapter
 
 class RVNotesItemKeyProvider(private val adapter: RvNotesAdapter) : ItemKeyProvider<Long>(
     SCOPE_MAPPED
