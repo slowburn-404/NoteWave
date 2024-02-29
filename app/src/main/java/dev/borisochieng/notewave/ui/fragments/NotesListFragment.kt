@@ -64,8 +64,9 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
         navController = findNavController()
 
-        setUpRecyclerView()
         getNotesFromViewModel()
+        setUpRecyclerView()
+
 
 
         binding.fabAddNote.setOnClickListener {
@@ -113,7 +114,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     }
 
     private fun getNotesFromViewModel() {
-        notesViewModel.getAllNotes.observe(requireActivity(), Observer { noteList ->
+        notesViewModel.allNotes.observe(requireActivity(), Observer { noteList ->
             noteList?.let {
                 notesListFromViewModel.clear()
                 it.forEach { note ->
@@ -232,12 +233,11 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
         }
     }
 
-    private fun getSelectedNotes(): MutableList<Long> {
-        return selectionTracker.selection.toMutableList()
-    }
+    private fun getSelectedNotesID(): MutableList<Long> = selectionTracker.selection.toMutableList()
+
 
     private fun getSelectedNotesFromViewModel(): List<Note?> {
-        val selectedNotesIDs = getSelectedNotes()
+        val selectedNotesIDs = getSelectedNotesID()
         return selectedNotesIDs.mapNotNull { noteID ->
             notesListFromViewModel.find { note ->
                 noteID == note.noteId
@@ -247,7 +247,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
     private fun updateSelectedNotesList() {
         selectedNotesList.clear()
-        val selectedNotesIDs = getSelectedNotes()
+        val selectedNotesIDs = getSelectedNotesID()
         selectedNotesList.addAll(selectedNotesIDs.mapNotNull { noteID ->
             notesListFromViewModel.find { note ->
                 noteID == note.noteId
@@ -266,7 +266,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
         note?.let {
             val action =
                 NotesListFragmentDirections.actionNotesListFragmentToEditNoteFragment(
-                    note.noteId.toString()
+                    note.noteId
                 )
             navController.navigate(action)
 

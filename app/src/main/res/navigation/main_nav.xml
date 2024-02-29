@@ -33,6 +33,6 @@
         tools:layout="@layout/fragment_edit_note" >
         <argument
             android:name="noteId"
-            app:argType="string" />
+            app:argType="long" />
     </fragment>
 </navigation>

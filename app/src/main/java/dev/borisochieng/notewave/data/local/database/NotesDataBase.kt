@@ -31,6 +31,13 @@ abstract class NotesDataBase : RoomDatabase() {
             }
 
         }
+        private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS notes_table ( note_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, updated_at TEXT NOT NULL);")
+
+            }
+
+        }
 
         @OptIn(InternalCoroutinesApi::class)
         fun getDatabase(context: Context): NotesDataBase {
@@ -38,7 +45,7 @@ abstract class NotesDataBase : RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext, NotesDataBase::class.java, "notes_database"
-                ).addMigrations(MIGRATION_1_2).build()
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
                 INSTANCE = instance
 
                 //return instance

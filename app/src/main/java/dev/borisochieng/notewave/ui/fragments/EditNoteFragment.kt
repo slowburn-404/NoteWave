@@ -1,7 +1,5 @@
 package dev.borisochieng.notewave.ui.fragments
 
-import android.icu.text.SimpleDateFormat
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
@@ -14,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -26,9 +25,10 @@ import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentEditNoteBinding
 import dev.borisochieng.notewave.data.models.Note
+import dev.borisochieng.notewave.data.utils.DateUtils
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
-import java.util.Locale
+import kotlinx.coroutines.launch
 
 
 class EditNoteFragment : Fragment() {
@@ -53,8 +53,6 @@ class EditNoteFragment : Fragment() {
         NotesViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
     }
 
-    private var notesList = mutableListOf<Note>()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -63,30 +61,12 @@ class EditNoteFragment : Fragment() {
         _binding = FragmentEditNoteBinding.inflate(layoutInflater, container, false)
         initViews()
 
-
         binding.materialToolBarEditNote.setNavigationOnClickListener {
-
             navController.popBackStack()
         }
 
-        notesViewModel.getAllNotes.observe(requireActivity(), Observer { noteListFromViewModel ->
-            noteListFromViewModel?.forEach { note ->
-                notesList.add(Note(note.noteId, note.title, note.content, note.updatedAt))
-            }
-        })
-        val noteIdFromNotesListFragment = navArgs.noteId
+        addNoteToEditText()
 
-        Log.d("NotesList :: Note ID", "$notesList :: $noteIdFromNotesListFragment")
-
-        val selectedNote = filterNotesList(notesList, noteIdFromNotesListFragment)
-
-        Log.d("Selected Note", selectedNote.toString())
-
-
-        textInputEditTextTitle.setText(selectedNote?.title)
-        textInputLayoutTitle.hint = null
-        textInputEditTextEditNote.setText(selectedNote?.content)
-        textInputLayoutEditNote.hint = null
 
         mutateViewsBasedOnETFocus()
 
@@ -105,6 +85,24 @@ class EditNoteFragment : Fragment() {
 
     private fun updateViewModel(note: Note) {
         notesViewModel.editNote(note)
+    }
+
+    private fun addNoteToEditText() {
+        val noteIdFromNotesListFragment = navArgs.noteId
+
+        lifecycleScope.launch {
+            notesViewModel.filterNotesByID(noteIdFromNotesListFragment).observe(requireActivity(), Observer {selectedNote ->
+                selectedNote?.let {
+                    Log.d("Selected Note", selectedNote.toString())
+                    textInputEditTextTitle.setText(selectedNote.title)
+                    textInputLayoutTitle.hint = null
+                    textInputEditTextEditNote.setText(selectedNote.content)
+                    textInputLayoutEditNote.hint = null
+
+                }
+            })
+        }
+
     }
 
     private fun mutateViewsBasedOnETFocus() {
@@ -166,26 +164,13 @@ class EditNoteFragment : Fragment() {
         actionMode = materialToolbarEditNote.startActionMode(callback)
     }
 
-    private fun filterNotesList(noteList: MutableList<Note>, id: String): Note? {
-
-        return noteList.find {
-            it.noteId.toString() == id
-        }
-    }
-
-    private fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat("dd MMMM yyyy h:mm a", Locale.getDefault())
-        
-        return formatter.format(calendar.time)
-    }
-
     private fun prepareDataForViewModel(): Note {
-        val noteId = navArgs.noteId.toLong()
+        val noteId = navArgs.noteId
         val title = textInputEditTextTitle.text?.trim().toString()
         val content = textInputEditTextEditNote.text?.trim().toString()
+        val date = DateUtils.getCurrentDate()
 
-        return Note(noteId, title, content, getCurrentDate())
+        return Note(noteId, title, content, date)
     }
 
     override fun onDestroy() {

@@ -1,6 +1,5 @@
 package dev.borisochieng.notewave.ui.fragments
 
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode.Callback
@@ -26,8 +25,7 @@ import dev.borisochieng.notewave.databinding.FragmentAddNoteBinding
 import dev.borisochieng.notewave.data.models.Note
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
-import java.util.Locale
-import android.icu.util.Calendar
+import dev.borisochieng.notewave.data.utils.DateUtils
 
 class AddNoteFragment : Fragment() {
 
@@ -60,7 +58,7 @@ class AddNoteFragment : Fragment() {
         materialToolbarAddNote.setNavigationOnClickListener {
             navController.popBackStack()
         }
-        textViewDateUpdate.text = getCurrentDate()
+        textViewDateUpdate.text = DateUtils.getCurrentDate()
 
 
         return binding.root
@@ -102,13 +100,6 @@ class AddNoteFragment : Fragment() {
         Log.d("Note to viewmodel:", note.toString())
     }
 
-    private fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat("dd MMMM yyyy h:mm a", Locale.getDefault())
-
-        return formatter.format(calendar.time)
-    }
-
     private fun showActionMode() {
         val callback = object : Callback {
 
@@ -127,7 +118,7 @@ class AddNoteFragment : Fragment() {
                 return when (item?.itemId) {
                     R.id.save -> {
                         // Handle save icon press
-                        textViewDateUpdate.text = getCurrentDate()
+                        textViewDateUpdate.text = DateUtils.getCurrentDate()
                         val note = prepareDataForViewModel()
                         sendNotesToViewModel(note)
 
@@ -154,7 +145,8 @@ class AddNoteFragment : Fragment() {
     private fun prepareDataForViewModel(): Note {
         val noteContent = textInputEditTextAddNote.text?.trim().toString()
         val noteTitle = textInputEditTextTitle.text?.trim().toString()
-        val date = getCurrentDate()
+        val date = DateUtils.getCurrentDate()
+
         Log.d("Note Title To ViewModel", noteTitle)
 
         return Note(0, noteTitle, noteContent, date)

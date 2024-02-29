@@ -28,4 +28,7 @@ class NotesRepository(private val notesDao: NotesDao) {
         notesDao.deleteNote(note)
     }
 
+    @WorkerThread
+    suspend fun getNoteById(noteId: Long): Flow<Note?> = notesDao.getNoteById(noteId)
+
 }
