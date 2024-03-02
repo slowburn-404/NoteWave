@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.fragments.AddNoteFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/aBAddNote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
@@ -15,13 +17,13 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolBarAddNote"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
             android:elevation="0dp"
             android:minHeight="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             app:navigationContentDescription="@string/back"
-            app:navigationIcon="@drawable/ic_arrow_back" />
+            app:navigationIcon="@drawable/ic_arrow_back"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -30,7 +32,7 @@
         android:fillViewport="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
@@ -39,7 +41,8 @@
                 android:id="@+id/tILAddNoteTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 android:hint="@string/title"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp">
@@ -50,7 +53,6 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_semibold"
                     android:inputType="textShortMessage|textCapWords"
-                    android:lineHeight="18dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -58,18 +60,21 @@
                 android:id="@+id/dateUpdated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tILAddNoteTitle"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:fontFamily="@font/inter_extralight"
+                android:layout_marginStart="12dp"
                 android:padding="4dp"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tILAddNoteTitle" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tILAddNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/dateUpdated"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/dateUpdated"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:hint="@string/new_note"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp">
@@ -80,11 +85,11 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:inputType="textMultiLine|textCapSentences"
-                    android:lineHeight="18dp" />
+                    android:lineSpacingMultiplier="1.2" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 

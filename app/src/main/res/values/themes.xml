@@ -48,14 +48,10 @@
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_arrow_back</item>
-        <item name="actionModeStyle">@style/customActionMode</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_close</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="textAppearanceHeadlineLarge">@style/customHeadlineAppearance</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <!--Splash screen-->
@@ -80,21 +76,18 @@
         <item name="fontFamily">@font/inter_medium</item>
         <item name="android:fontFamily">@font/inter_medium</item>
     </style>
+    <style name="titleLarge" parent="TextAppearance.Material3.ActionBar.Title">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
 
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerSize">10dp</item>
     </style>
     <!--Title appearance-->
-
     <style name="customHeadlineAppearance" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textSize">24sp</item>
-
-</style>
-
-    <style name="customActionMode" parent="Widget.Material3.ActionMode">
-        <item name="background">@android:color/transparent</item>
     </style>
-
 </resources>
