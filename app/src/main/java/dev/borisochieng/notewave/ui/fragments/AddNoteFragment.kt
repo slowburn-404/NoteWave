@@ -14,6 +14,7 @@ import android.view.ActionMode
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -25,7 +26,7 @@ import dev.borisochieng.notewave.databinding.FragmentAddNoteBinding
 import dev.borisochieng.notewave.data.models.Note
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
-import dev.borisochieng.notewave.data.utils.DateUtils
+import dev.borisochieng.notewave.data.utils.DateUtil
 
 class AddNoteFragment : Fragment() {
 
@@ -39,6 +40,7 @@ class AddNoteFragment : Fragment() {
     private lateinit var textViewDateUpdate: MaterialTextView
     private lateinit var textInputLayoutTitle: TextInputLayout
     private lateinit var textInputEditTextTitle: TextInputEditText
+    private lateinit var appBarAddNote: AppBarLayout
 
     private var actionMode: ActionMode? = null
 
@@ -50,7 +52,6 @@ class AddNoteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         _binding = FragmentAddNoteBinding.inflate(inflater, container, false)
         initViews()
         mutateViewsBasedOnETFocus()
@@ -58,8 +59,7 @@ class AddNoteFragment : Fragment() {
         materialToolbarAddNote.setNavigationOnClickListener {
             navController.popBackStack()
         }
-        textViewDateUpdate.text = DateUtils.getCurrentDate()
-
+        textViewDateUpdate.text = DateUtil.getCurrentDate()
 
         return binding.root
     }
@@ -72,6 +72,7 @@ class AddNoteFragment : Fragment() {
         textViewDateUpdate = binding.dateUpdated
         textInputLayoutTitle = binding.tILAddNoteTitle
         textInputEditTextTitle = binding.tIETAddNoteTitle
+        appBarAddNote = binding.aBAddNote
     }
 
     private fun mutateViewsBasedOnETFocus() {
@@ -118,7 +119,7 @@ class AddNoteFragment : Fragment() {
                 return when (item?.itemId) {
                     R.id.save -> {
                         // Handle save icon press
-                        textViewDateUpdate.text = DateUtils.getCurrentDate()
+                        textViewDateUpdate.text = DateUtil.getCurrentDate()
                         val note = prepareDataForViewModel()
                         sendNotesToViewModel(note)
 
@@ -139,13 +140,15 @@ class AddNoteFragment : Fragment() {
             }
         }
 
-        actionMode = materialToolbarAddNote.startActionMode(callback)
+        //actionMode = materialToolbarAddNote.startActionMode(callback)
+        //actionMode = appBarAddNote.startActionMode(callback)
+        actionMode = appBarAddNote.startActionModeForChild(materialToolbarAddNote, callback)
     }
 
     private fun prepareDataForViewModel(): Note {
         val noteContent = textInputEditTextAddNote.text?.trim().toString()
         val noteTitle = textInputEditTextTitle.text?.trim().toString()
-        val date = DateUtils.getCurrentDate()
+        val date = DateUtil.getCurrentDate()
 
         Log.d("Note Title To ViewModel", noteTitle)
 

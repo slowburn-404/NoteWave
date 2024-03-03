@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotesDao {
-    @Query("SELECT * FROM notes_table ORDER BY noteId DESC")
+    @Query("SELECT * FROM notes_table ORDER BY time_stamp DESC")
     fun getAllNotes(): Flow<MutableList<Note>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

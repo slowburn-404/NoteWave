@@ -3,11 +3,13 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.navigation.safeargs")
+    id("androidx.room")
 }
 
 android {
     namespace = "dev.borisochieng.notewave"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "dev.borisochieng.notewave"
@@ -17,6 +19,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        room {
+            schemaDirectory(path = "$projectDir/schemas")
+        }
+
     }
 
     buildTypes {
@@ -41,7 +48,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")

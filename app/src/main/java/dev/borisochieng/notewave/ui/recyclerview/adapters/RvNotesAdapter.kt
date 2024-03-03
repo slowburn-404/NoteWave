@@ -32,7 +32,7 @@ class RvNotesAdapter(
         fun bind(note: Note, isSelected: Boolean = false) {
             tvTitle.text = note.title
             tvContent.text = note.content
-            tvDate.text = note.updatedAt
+            tvDate.text = note.timeStamp
 
             //update selection state of the recycler view
             itemView.isActivated = isSelected

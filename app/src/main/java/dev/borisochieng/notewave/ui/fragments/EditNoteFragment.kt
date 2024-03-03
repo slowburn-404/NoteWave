@@ -25,7 +25,6 @@ import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentEditNoteBinding
 import dev.borisochieng.notewave.data.models.Note
-import dev.borisochieng.notewave.data.utils.DateUtils
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
 import kotlinx.coroutines.launch
@@ -112,6 +111,7 @@ class EditNoteFragment : Fragment() {
 
                 showActionMode()
             }
+            //redraw menu
             requireActivity().invalidateOptionsMenu()
 
         }
@@ -168,9 +168,9 @@ class EditNoteFragment : Fragment() {
         val noteId = navArgs.noteId
         val title = textInputEditTextTitle.text?.trim().toString()
         val content = textInputEditTextEditNote.text?.trim().toString()
-        val date = DateUtils.getCurrentDate()
+        //val date = DateUtil.getCurrentDate()
 
-        return Note(noteId, title, content, date)
+        return Note(noteId, title, content)
     }
 
     override fun onDestroy() {

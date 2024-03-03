@@ -41,7 +41,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     private lateinit var rvNotes: RecyclerView
     private lateinit var notesListAdapter: RvNotesAdapter
     private var notesListFromViewModel = mutableListOf<Note>()
-    private lateinit var selectedNotesList: MutableList<Note>
+    private var selectedNotesList =  mutableListOf<Note>()
     private lateinit var materialToolbarNoteList: MaterialToolbar
     private lateinit var selectionTracker: SelectionTracker<Long>
 
@@ -60,17 +60,15 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
         rvNotes = binding.rvNotes
         materialToolbarNoteList = binding.mTNotesList
 
-        selectedNotesList = mutableListOf()
-
         navController = findNavController()
 
         getNotesFromViewModel()
         setUpRecyclerView()
 
-
-
-        binding.fabAddNote.setOnClickListener {
-            navController.navigate(R.id.action_notesListFragment_to_addNoteFragment)
+        binding.fabAddNote.apply {
+            setOnClickListener {
+                navController.navigate(R.id.action_notesListFragment_to_addNoteFragment)
+            }
         }
 
         val selectionObserver = object : SelectionTracker.SelectionObserver<Long>() {
@@ -81,7 +79,10 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
                 if (!selectionTracker.hasSelection()) {
                     actionMode?.finish()
+
                 }
+                binding.fabAddNote.isEnabled = !selectionTracker.hasSelection()
+
             }
         }
         selectionTracker.addObserver(selectionObserver)
@@ -123,7 +124,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
                             noteId = note.noteId,
                             title = note.title,
                             content = note.content,
-                            updatedAt = note.updatedAt
+                            timeStamp = note.timeStamp
                         )
                     )
                 }
@@ -182,8 +183,6 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
             override fun onDestroyActionMode(mode: ActionMode?) {
                 actionMode = null
                 selectedNotesList.clear()
-                rvNotes.adapter?.notifyDataSetChanged()
-
             }
         }
 
@@ -218,26 +217,24 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
         if (selectedNotes.isNotEmpty()) {
             selectedNotes.forEach { selectedNote ->
-                selectedNote?.let {
-                    notesViewModel.deleteNote(selectedNote)
-                }
+                    notesViewModel.deleteNote(selectedNote!!)
             }
             actionMode?.finish()
             Snackbar
                 .make(
                     binding.root,
-                    resources.getString(R.string.notes_deleted),
+                    resources.getQuantityString(R.plurals.deleted_notes, selectedNotes.size),
                     Snackbar.LENGTH_SHORT
                 )
                 .show()
         }
     }
 
-    private fun getSelectedNotesID(): MutableList<Long> = selectionTracker.selection.toMutableList()
+    private fun getSelectedNotes(): MutableList<Long> = selectionTracker.selection.toMutableList()
 
 
     private fun getSelectedNotesFromViewModel(): List<Note?> {
-        val selectedNotesIDs = getSelectedNotesID()
+        val selectedNotesIDs = getSelectedNotes()
         return selectedNotesIDs.mapNotNull { noteID ->
             notesListFromViewModel.find { note ->
                 noteID == note.noteId
@@ -247,18 +244,12 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
     private fun updateSelectedNotesList() {
         selectedNotesList.clear()
-        val selectedNotesIDs = getSelectedNotesID()
-        selectedNotesList.addAll(selectedNotesIDs.mapNotNull { noteID ->
+        val selectedNotesIDs = getSelectedNotes()
+        selectedNotesList.addAll(selectedNotesIDs.mapNotNull { id ->
             notesListFromViewModel.find { note ->
-                noteID == note.noteId
+                id == note.noteId
             }
         })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        selectedNotesList.clear()
-        selectionTracker.clearSelection()
     }
 
     override fun onItemClick(item: Note) {

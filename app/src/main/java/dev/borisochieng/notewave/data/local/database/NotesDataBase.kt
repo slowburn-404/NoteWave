@@ -6,10 +6,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.borisochieng.notewave.data.models.Note
-import dev.borisochieng.notewave.data.utils.DateConverters
+import dev.borisochieng.notewave.data.utils.DateConverterUtil
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 import kotlin.concurrent.Volatile
@@ -22,7 +20,7 @@ import kotlin.concurrent.Volatile
         AutoMigration(from = 3, to = 4)
     ]
 )
-@TypeConverters(DateConverters::class)
+@TypeConverters(DateConverterUtil::class)
 abstract class NotesDataBase : RoomDatabase() {
 
     abstract fun notesDAO(): NotesDao

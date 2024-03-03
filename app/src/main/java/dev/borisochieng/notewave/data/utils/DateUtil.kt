@@ -4,7 +4,7 @@ import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import java.util.Locale
 
-object DateUtils {
+object DateUtil {
     private var formatter = SimpleDateFormat("dd MMMM yyyy h:mm a", Locale.getDefault())
 
     fun getCurrentDate(): String {
