@@ -29,6 +29,6 @@ class NotesRepository(private val notesDao: NotesDao) {
     }
 
     @WorkerThread
-    suspend fun getNoteById(noteId: Long): Flow<Note?> = notesDao.getNoteById(noteId)
+    fun getNoteById(noteId: Long): Flow<Note?> = notesDao.getNoteById(noteId)
 
 }

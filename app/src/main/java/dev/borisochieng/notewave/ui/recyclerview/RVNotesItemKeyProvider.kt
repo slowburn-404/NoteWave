@@ -7,12 +7,8 @@ class RVNotesItemKeyProvider(private val adapter: RvNotesAdapter) : ItemKeyProvi
     SCOPE_MAPPED
 ) {
 
-    override fun getKey(position: Int): Long {
-        return adapter.getItem(position).noteId
+    override fun getKey(position: Int): Long = adapter.getItem(position).noteId
 
-    }
+    override fun getPosition(key: Long): Int = adapter.getPosition(key)
 
-    override fun getPosition(key: Long): Int {
-        return adapter.getPosition(key)
-    }
 }

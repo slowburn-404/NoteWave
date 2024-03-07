@@ -10,7 +10,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -23,15 +22,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.ui.recyclerview.adapters.RvNotesAdapter
-import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentNotesListBinding
 import dev.borisochieng.notewave.data.models.Note
+import dev.borisochieng.notewave.ui.activities.MainActivity
 import dev.borisochieng.notewave.ui.recyclerview.RVNotesItemDetailsLookup
 import dev.borisochieng.notewave.ui.recyclerview.RVNotesItemKeyProvider
 import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemClickListener
 import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemLongClickListener
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
-import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
 
 class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     RVNotesListOnItemLongClickListener {
@@ -40,7 +38,7 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
     private lateinit var rvNotes: RecyclerView
     private lateinit var notesListAdapter: RvNotesAdapter
-    private var notesListFromViewModel = mutableListOf<Note>()
+    private var notesListFromViewModel = mutableSetOf<Note>()
     private var selectedNotesList =  mutableListOf<Note>()
     private lateinit var materialToolbarNoteList: MaterialToolbar
     private lateinit var selectionTracker: SelectionTracker<Long>
@@ -48,22 +46,24 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     private lateinit var navController: NavController
     private var actionMode: ActionMode? = null
 
-    private val notesViewModel: NotesViewModel by activityViewModels {
-        NotesViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
-    }
+    private lateinit var notesViewModel: NotesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
+
+        //Init views
         rvNotes = binding.rvNotes
         materialToolbarNoteList = binding.mTNotesList
-
         navController = findNavController()
 
-        getNotesFromViewModel()
+        notesViewModel = (activity as MainActivity).notesViewModel
+
         setUpRecyclerView()
+        setUpSelectionTracker()
+        getNotesFromViewModel()
 
         binding.fabAddNote.apply {
             setOnClickListener {
@@ -98,11 +98,14 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     }
 
     private fun setUpRecyclerView() {
-        notesListAdapter = RvNotesAdapter(notesListFromViewModel, this, this)
+        notesListAdapter = RvNotesAdapter(this, this)
+        rvNotes.adapter = notesListAdapter
         rvNotes.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rvNotes.setHasFixedSize(true)
-        rvNotes.adapter = notesListAdapter
 
+    }
+
+    private fun setUpSelectionTracker() {
         selectionTracker = SelectionTracker.Builder(
             "noteId",
             rvNotes,
@@ -116,19 +119,9 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
     private fun getNotesFromViewModel() {
         notesViewModel.allNotes.observe(requireActivity(), Observer { noteList ->
-            noteList?.let {
-                notesListFromViewModel.clear()
-                it.forEach { note ->
-                    notesListFromViewModel.add(
-                        Note(
-                            noteId = note.noteId,
-                            title = note.title,
-                            content = note.content,
-                            timeStamp = note.timeStamp
-                        )
-                    )
-                }
-                notesListAdapter.updateList(notesListFromViewModel)
+            noteList?.let {notes ->
+                notesListFromViewModel.addAll(notes)
+                notesListAdapter.updateList(notesListFromViewModel.toMutableList())
             }
 
         })
@@ -149,14 +142,12 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
-                    // Handle delete icon press
                     R.id.delete -> {
                         showDialog()
                         mode?.finish()
 
                         true
                     }
-                    //Handle select icon press
                     R.id.select_all -> {
                         /*
                         If all items are selected, clear selection else
@@ -217,8 +208,10 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
 
         if (selectedNotes.isNotEmpty()) {
             selectedNotes.forEach { selectedNote ->
-                    notesViewModel.deleteNote(selectedNote!!)
+                    notesViewModel.deleteNote(selectedNote)                
             }
+            notesListFromViewModel.removeAll(selectedNotes.toSet())
+            notesListAdapter.updateList(notesListFromViewModel.toMutableList())
             actionMode?.finish()
             Snackbar
                 .make(
@@ -233,13 +226,13 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     private fun getSelectedNotes(): MutableList<Long> = selectionTracker.selection.toMutableList()
 
 
-    private fun getSelectedNotesFromViewModel(): List<Note?> {
+    private fun getSelectedNotesFromViewModel(): MutableList<Note> {
         val selectedNotesIDs = getSelectedNotes()
         return selectedNotesIDs.mapNotNull { noteID ->
             notesListFromViewModel.find { note ->
                 noteID == note.noteId
             }
-        }
+        } as MutableList<Note>
     }
 
     private fun updateSelectedNotesList() {
@@ -264,6 +257,8 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
             Log.d("Note ID", note.noteId.toString())
         }
 
+        selectionTracker.clearSelection()
+
     }
 
     private fun getClickedNote(item: Note): Note? {
@@ -279,7 +274,6 @@ class NotesListFragment : Fragment(), RVNotesListOnItemClickListener,
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        selectionTracker.clearSelection()
     }
 
 }

@@ -9,7 +9,6 @@ class NotesViewModelFactory(private val notesRepository: NotesRepository) :
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-
             return NotesViewModel(notesRepository) as T
 
         }

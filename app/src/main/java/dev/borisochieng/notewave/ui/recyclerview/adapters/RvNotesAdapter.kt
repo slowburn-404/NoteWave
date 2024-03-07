@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
@@ -14,11 +16,12 @@ import dev.borisochieng.notewave.data.models.Note
 import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemLongClickListener
 
 class RvNotesAdapter(
-    private var notesList: MutableList<Note> = mutableListOf(),
+    //private var notesList: MutableList<Note> = mutableListOf(),
     private val onItemClickListener: RVNotesListOnItemClickListener,
     private val onItemLongClickListener: RVNotesListOnItemLongClickListener
 ) : RecyclerView.Adapter<RvNotesAdapter.RvNotesViewHolder>() {
     lateinit var selectionTracker: SelectionTracker<Long>
+
 
     inner class RvNotesViewHolder(binding: ItemNotesBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -50,10 +53,20 @@ class RvNotesAdapter(
             }
 
     }
+    private val diffUtil = object: DiffUtil.ItemCallback<Note>() {
+        override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
+            return oldItem.noteId == newItem.noteId
+        }
+    }
+
+    private val asyncListDiffer =  AsyncListDiffer(this, diffUtil)
 
     fun updateList(newList: MutableList<Note>) {
-        notesList = newList
-        notifyDataSetChanged()
+        asyncListDiffer.submitList(newList)
     }
 
     override fun onCreateViewHolder(
@@ -67,7 +80,7 @@ class RvNotesAdapter(
 
     override fun onBindViewHolder(holder: RvNotesViewHolder, position: Int) {
 
-        val item = notesList[position]
+        val item = asyncListDiffer.currentList[position]
 
         //bind item data and selection state
         holder.bind(item)
@@ -96,13 +109,13 @@ class RvNotesAdapter(
 
     }
 
-    fun getItem(position: Int) = notesList[position]
-    fun getPosition(key: Long) = notesList.indexOfFirst { it.noteId == key }
+    fun getItem(position: Int) = asyncListDiffer.currentList[position]
+    fun getPosition(key: Long) = asyncListDiffer.currentList.indexOfFirst { it.noteId == key }
 
     override fun getItemId(position: Int): Long {
-        return notesList[position].noteId
+        return asyncListDiffer.currentList[position].noteId
     }
 
-    override fun getItemCount() = notesList.size
+    override fun getItemCount() = asyncListDiffer.currentList.size
 
 }

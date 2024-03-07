@@ -15,11 +15,12 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/materialToolBarEditNote"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:elevation="0dp"
             android:minHeight="?attr/actionBarSize"
+            app:menu="@menu/menu_edit_note"
             app:layout_collapseMode="pin"
             app:navigationContentDescription="@string/back"
             app:navigationIcon="@drawable/ic_arrow_back" />
@@ -31,7 +32,7 @@
         android:fillViewport="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
@@ -40,10 +41,11 @@
                 android:id="@+id/tILEditNoteTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:hint="@string/title"
                 app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="0dp">
+                app:boxStrokeWidthFocused="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tIETEditNoteTitle"
@@ -51,29 +53,31 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_semibold"
                     android:inputType="textShortMessage|textCapWords"
-                    android:lineHeight="18dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/dateUpdated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tILEditNoteTitle"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
                 android:fontFamily="@font/inter_extralight"
                 android:padding="4dp"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tILEditNoteTitle" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tILEditNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/dateUpdated"
-                android:hint="@string/edit_note"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:hint="@string/new_note"
                 app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="0dp">
+                app:boxStrokeWidthFocused="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateUpdated">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tIETEditNote"
@@ -81,11 +85,10 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:inputType="textMultiLine|textCapSentences"
-                    android:lineHeight="18dp" />
+                    android:lineSpacingMultiplier="1.2" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

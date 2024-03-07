@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import dev.borisochieng.notewave.data.utils.DateConverterUtil
-import dev.borisochieng.notewave.data.utils.DateUtil
+import dev.borisochieng.notewave.utils.DateConverterUtil
+import dev.borisochieng.notewave.utils.DateUtil
 
 @Entity(tableName = "notes_table")
 data class Note(

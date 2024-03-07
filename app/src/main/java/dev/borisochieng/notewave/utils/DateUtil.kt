@@ -1,4 +1,4 @@
-package dev.borisochieng.notewave.data.utils
+package dev.borisochieng.notewave.utils
 
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar

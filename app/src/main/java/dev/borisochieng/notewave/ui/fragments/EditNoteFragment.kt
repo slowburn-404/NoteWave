@@ -10,7 +10,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -22,11 +21,10 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.R
-import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.databinding.FragmentEditNoteBinding
 import dev.borisochieng.notewave.data.models.Note
+import dev.borisochieng.notewave.ui.activities.MainActivity
 import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
-import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
 import kotlinx.coroutines.launch
 
 
@@ -41,17 +39,14 @@ class EditNoteFragment : Fragment() {
 
     private var actionMode: ActionMode? = null
 
+    private lateinit var notesViewModel: NotesViewModel
+
     private lateinit var textInputLayoutTitle: TextInputLayout
     private lateinit var textInputEditTextTitle: TextInputEditText
     private lateinit var textViewUpdatedAt: MaterialTextView
     private lateinit var textInputLayoutEditNote: TextInputLayout
     private lateinit var textInputEditTextEditNote: TextInputEditText
     private lateinit var materialToolbarEditNote: MaterialToolbar
-
-    private val notesViewModel: NotesViewModel by activityViewModels {
-        NotesViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -60,13 +55,28 @@ class EditNoteFragment : Fragment() {
         _binding = FragmentEditNoteBinding.inflate(layoutInflater, container, false)
         initViews()
 
-        binding.materialToolBarEditNote.setNavigationOnClickListener {
-            navController.popBackStack()
+        notesViewModel = (activity as MainActivity).notesViewModel
+
+        binding.materialToolBarEditNote.apply {
+            setNavigationOnClickListener {
+                navController.popBackStack()
+            }
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.delete_note -> {
+                       //TODO("Add snackbar and material dialog")
+                        deleteNote(prepareDataForViewModel())
+                        navController.popBackStack()
+
+                        true
+                    }
+
+                    else -> false
+                }
+            }
         }
 
         addNoteToEditText()
-
-
         mutateViewsBasedOnETFocus()
 
         return binding.root
@@ -90,16 +100,18 @@ class EditNoteFragment : Fragment() {
         val noteIdFromNotesListFragment = navArgs.noteId
 
         lifecycleScope.launch {
-            notesViewModel.filterNotesByID(noteIdFromNotesListFragment).observe(requireActivity(), Observer {selectedNote ->
-                selectedNote?.let {
-                    Log.d("Selected Note", selectedNote.toString())
-                    textInputEditTextTitle.setText(selectedNote.title)
-                    textInputLayoutTitle.hint = null
-                    textInputEditTextEditNote.setText(selectedNote.content)
-                    textInputLayoutEditNote.hint = null
+            notesViewModel.filterNotesByID(noteIdFromNotesListFragment)
+                .observe(requireActivity(), Observer { selectedNote ->
+                    selectedNote?.let {
+                        Log.d("Selected Note", selectedNote.toString())
+                        textInputEditTextTitle.setText(selectedNote.title)
+                        textInputLayoutTitle.hint = null
+                        textInputEditTextEditNote.setText(selectedNote.content)
+                        textInputLayoutEditNote.hint = null
+                        textViewUpdatedAt.text = selectedNote.timeStamp
 
-                }
-            })
+                    }
+                })
         }
 
     }
@@ -168,9 +180,12 @@ class EditNoteFragment : Fragment() {
         val noteId = navArgs.noteId
         val title = textInputEditTextTitle.text?.trim().toString()
         val content = textInputEditTextEditNote.text?.trim().toString()
-        //val date = DateUtil.getCurrentDate()
 
         return Note(noteId, title, content)
+    }
+
+    private fun deleteNote(note: Note) {
+        notesViewModel.deleteNote(note)
     }
 
     override fun onDestroy() {

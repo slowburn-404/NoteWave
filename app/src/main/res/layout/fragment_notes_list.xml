@@ -1,53 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.NotesListFragment"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.fragments.NotesListFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/aBNotesList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/mTNotesList"
-                android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"
-                app:title="@string/my_notes"
-                app:titleTextAppearance="@style/titleLarge"/>
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/mTNotesList"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="0dp"
+            app:title="@string/my_notes"
+            app:titleTextAppearance="@style/titleLarge" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_gravity="center_horizontal"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvNotes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                tools:listitem="@layout/item_notes"/>
-    </androidx.core.widget.NestedScrollView>
+        android:layout_marginBottom="8dp"
+        android:layout_below="@+id/aBNotesList"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        tools:listitem="@layout/item_notes" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabAddNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:contentDescription="@string/new_note"
         android:text="@string/new_note"
         app:icon="@drawable/ic_add" />
 
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

@@ -16,9 +16,7 @@ import dev.borisochieng.notewave.ui.viewmodels.NotesViewModelFactory
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private var allNotesFromViewModel: MutableList<Note>? = mutableListOf()
-
-    private val notesViewModel: NotesViewModel by viewModels {
+    val notesViewModel: NotesViewModel by viewModels {
         NotesViewModelFactory((this.application as NoteApplication).notesRepository)
     }
 
@@ -33,15 +31,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(rootView)
 
 
-        allNotesFromViewModel = notesViewModel.allNotes.value
-
-
         //Initialize ViewModel in the splash screen
         val content: View = rootView
         content.viewTreeObserver.addOnPreDrawListener(
-            object: ViewTreeObserver.OnPreDrawListener{
+            object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
-                    return if (allNotesFromViewModel.isNullOrEmpty()) {
+                    return if (notesViewModel.allNotes.isInitialized) {
                         content.viewTreeObserver.removeOnPreDrawListener(this)
                         true
                     } else {

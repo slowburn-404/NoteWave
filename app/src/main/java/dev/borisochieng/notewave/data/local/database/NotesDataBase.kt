@@ -7,7 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import dev.borisochieng.notewave.data.models.Note
-import dev.borisochieng.notewave.data.utils.DateConverterUtil
+import dev.borisochieng.notewave.utils.DateConverterUtil
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 import kotlin.concurrent.Volatile

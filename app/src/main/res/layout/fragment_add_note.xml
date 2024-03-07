@@ -65,7 +65,7 @@
                 android:padding="4dp"
                 android:textSize="11sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tILAddNoteTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/tILAddNoteTitle"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tILAddNote"
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
                     android:inputType="textMultiLine|textCapSentences"
-                    android:lineSpacingMultiplier="1.2" />
+                    android:lineSpacingMultiplier="1.2"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
