@@ -36,14 +36,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:imeOptions="actionSearch"
-        android:inputType="text"
+        android:hint="@string/search_notes"
         app:layout_anchor="@id/search_bar">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSearchResults"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_notes" />
+            tools:listitem="@layout/item_search_results" />
     </com.google.android.material.search.SearchView>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

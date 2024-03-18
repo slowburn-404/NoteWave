@@ -26,10 +26,7 @@
             android:paddingTop="4dp"
             android:paddingEnd="8dp"
             android:text="@string/title"
-            android:textSize="28sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:textSize="28sp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvContent"
@@ -41,7 +38,9 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="@string/contents"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:maxLines="15"
+            android:ellipsize="end"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvDate"

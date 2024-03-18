@@ -2,6 +2,8 @@ package dev.borisochieng.notewave.ui.fragments
 
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.ActionMode
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,12 +13,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
-import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -52,17 +52,16 @@ class NotesListFragment : Fragment(), OnItemClickListener,
     private var _binding: FragmentNotesListBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var rvNotes: RecyclerView
+    private lateinit var rvNotesList: RecyclerView
     private lateinit var notesListAdapter: RvNotesAdapter
     private var notesListFromViewModel = mutableSetOf<Note>()
     private var selectedNotesList = mutableListOf<Note>()
-    private var searchResultsList = mutableListOf<Note>()
+    private var searchResultsList = listOf<Note>()
     private lateinit var selectionTracker: SelectionTracker<Long>
-    private lateinit var searchBar: SearchBar
-    //private lateinit var materialToolbar: MaterialToolbar
+    private lateinit var searchBarNotesList: SearchBar
     private lateinit var rvSearchView: RecyclerView
     private lateinit var searchViewAdapter: SearchViewAdapter
-    private lateinit var searchView: SearchView
+    private lateinit var searchViewNotesList: SearchView
     private lateinit var appBar: AppBarLayout
 
     private lateinit var navController: NavController
@@ -77,22 +76,25 @@ class NotesListFragment : Fragment(), OnItemClickListener,
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
-        setInsetsForFAB(binding.fabAddNote)
-
+        setInsetsForView(binding.fabAddNote)
+        setInsetsForView(binding.rvNotes)
         //Init views
-        rvNotes = binding.rvNotes
+        binding.apply {
+            rvNotesList = rvNotes
+            searchBarNotesList = searchBar
+            appBar = aBNotesList
+            rvSearchView = rvSearchResults
+            searchViewNotesList = searchView
+        }
         navController = findNavController()
-        searchBar = binding.searchBar
-        appBar = binding.aBNotesList
-        rvSearchView = binding.rvSearchResults
-        searchView = binding.searchView
+
 
         initRecyclerView()
         initSelectionTracker()
         getNotesFromViewModel()
         initSearchViewRecyclerView()
-        filterNotesList(searchView.editText.text.toString().trim())
-
+        listenForTextChanges()
+        //collapseSearchViewOnBackPress()
 
         binding.fabAddNote.setOnClickListener {
             navController.navigate(R.id.action_notesListFragment_to_addNoteFragment)
@@ -103,14 +105,18 @@ class NotesListFragment : Fragment(), OnItemClickListener,
             selectionTracker.onRestoreInstanceState(it)
         }
 
-
+        //get text from search and add to search bar
+        searchViewNotesList.editText.setOnEditorActionListener { _, _, _ ->
+            searchBarNotesList.setText(searchViewNotesList.text.toString())
+            false
+        }
 
         return binding.root
     }
 
     private fun initRecyclerView() {
         notesListAdapter = RvNotesAdapter(this, this)
-        rvNotes.apply {
+        rvNotesList.apply {
             layoutManager =
                 StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             setHasFixedSize(true)
@@ -119,31 +125,38 @@ class NotesListFragment : Fragment(), OnItemClickListener,
     }
 
     private fun initSearchViewRecyclerView() {
-        searchViewAdapter = SearchViewAdapter(this, searchResultsList)
+        searchViewAdapter = SearchViewAdapter(this)
         rvSearchView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = searchViewAdapter
         }
     }
+    /*private fun collapseSearchViewOnBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (searchBarNotesList.collapse(appBar)) {
+                searchViewNotesList.hide()
+            } else {
+                requireActivity().finish()
+            }
+        }
+    }*/
 
     private fun getNotesFromViewModel() {
-        notesViewModel.allNotes.observe(requireActivity(), Observer { noteList ->
+        notesViewModel.allNotes.observe(viewLifecycleOwner, Observer { noteList ->
             noteList?.let {
                 notesListFromViewModel.addAll(it)
                 notesListAdapter.updateList(notesListFromViewModel.toMutableList())
             }
-
         })
-
     }
 
     private fun initSelectionTracker() {
         selectionTracker = SelectionTracker.Builder(
             "noteId",
-            rvNotes,
+            rvNotesList,
             RVNotesItemKeyProvider(notesListAdapter),
-            RVNotesItemDetailsLookup(rvNotes),
+            RVNotesItemDetailsLookup(rvNotesList),
             StorageStrategy.createLongStorage()
         ).build()
         notesListAdapter.selectionTracker = selectionTracker
@@ -201,7 +214,6 @@ class NotesListFragment : Fragment(), OnItemClickListener,
                                 selectionTracker.select(note.noteId)
 
                             }
-
                         }
 
                         true
@@ -265,16 +277,16 @@ class NotesListFragment : Fragment(), OnItemClickListener,
             Snackbar
                 .make(
                     binding.root,
-                    resources.getQuantityString(R.plurals.deleted_notes, selectedNotesList.size),
+                    resources.getQuantityString(R.plurals.deleted_notes, selectedNotes.size),
                     Snackbar.LENGTH_SHORT
                 )
                 .show()
         }
     }
 
-    private fun setInsetsForFAB(view: View) {
+    private fun setInsetsForView(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
             v.updateLayoutParams<MarginLayoutParams> {
                 leftMargin = insets.left
                 bottomMargin = insets.bottom
@@ -286,13 +298,31 @@ class NotesListFragment : Fragment(), OnItemClickListener,
     }
 
     private fun filterNotesList(query: String) {
-        searchResultsList.clear()
-        notesListFromViewModel.forEach { note ->
-            if (note.title.lowercase().contains(query.lowercase(Locale.getDefault()))) {
-                searchResultsList.add(note)
-            }
+        val lowerCaseQuery = query.lowercase(Locale.getDefault())
+        searchResultsList = if (query.isEmpty()) {
+            emptyList()
+        } else {
+            notesListFromViewModel.filter { note ->
+                note.title.lowercase(Locale.getDefault()).contains(lowerCaseQuery) || note.content.lowercase(Locale.getDefault()).contains(lowerCaseQuery)
+             }
         }
         searchViewAdapter.setSearchResultsList(searchResultsList)
+    }
+
+    private fun listenForTextChanges() {
+        searchViewNotesList.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterNotesList(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
     }
 
     override fun onItemClick(item: Note) {
@@ -316,12 +346,6 @@ class NotesListFragment : Fragment(), OnItemClickListener,
 
     override fun onItemLongClick(item: Note) {
         showActionMode()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        getNotesFromViewModel()
-        notesListAdapter.updateList(notesListFromViewModel.toMutableList())
     }
 
     override fun onDestroy() {

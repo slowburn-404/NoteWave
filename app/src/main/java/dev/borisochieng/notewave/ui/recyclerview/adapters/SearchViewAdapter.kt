@@ -2,53 +2,51 @@ package dev.borisochieng.notewave.ui.recyclerview.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import dev.borisochieng.notewave.data.models.Note
-import dev.borisochieng.notewave.databinding.ItemNotesBinding
+import dev.borisochieng.notewave.databinding.ItemSearchResultsBinding
 import dev.borisochieng.notewave.ui.recyclerview.SVOnItemClickListener
+import dev.borisochieng.notewave.utils.RVDiffUtil
 
 class SearchViewAdapter(
-    private val onItemClickListener: SVOnItemClickListener,
-    private var searchResultsList: List<Note>
+    private val sVOnItemClickListener: SVOnItemClickListener
 ) :
     RecyclerView.Adapter<SearchViewAdapter.SearchViewHolder>() {
 
-    inner class SearchViewHolder(binding: ItemNotesBinding) :
+        private val asyncListDiffer = AsyncListDiffer(this, RVDiffUtil())
+
+    inner class SearchViewHolder(private val binding: ItemSearchResultsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        private val title = binding.tvTitle
-        private val content = binding.tvContent
-        private val timestamp = binding.tvDate
 
         fun bind(item: Note) {
-            title.text = item.title
-            content.text = item.content
-            timestamp.text = item.timeStamp
+            binding.apply {
+                tvTitle.text = item.title
+                tvContent.text = item.content
+                tvDate.text = item.timeStamp
 
+                root.setOnClickListener {
+                    sVOnItemClickListener.onSVItemClick(item)
+                }
+            }
         }
-
-
     }
+
     fun setSearchResultsList(newList: List<Note>) {
-        this.searchResultsList = newList
-        notifyDataSetChanged()
+        asyncListDiffer.submitList(newList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val itemBinding =
-            ItemNotesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemSearchResultsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return SearchViewHolder(itemBinding)
     }
 
-    override fun getItemCount(): Int = searchResultsList.size
+    override fun getItemCount(): Int = asyncListDiffer.currentList.size
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        val item = searchResultsList[position]
+        holder.bind(asyncListDiffer.currentList[position])
 
-        holder.bind(item)
-
-        holder.itemView.setOnClickListener {
-            onItemClickListener.onSVItemClick(item)
-        }
     }
 }

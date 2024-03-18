@@ -21,25 +21,45 @@ class RvNotesAdapter(
 ) : RecyclerView.Adapter<RvNotesAdapter.RvNotesViewHolder>() {
     lateinit var selectionTracker: SelectionTracker<Long>
 
-    inner class RvNotesViewHolder(binding: ItemNotesBinding) :
+    inner class RvNotesViewHolder(private val binding: ItemNotesBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        private val tvTitle: MaterialTextView = binding.tvTitle
-        private val tvContent: TextView = binding.tvContent
-        private val tvDate: TextView = binding.tvDate
         val notesCard: MaterialCardView = binding.notesCard
 
 
-        fun bind(note: Note, isSelected: Boolean = false) {
-            tvTitle.text = note.title
-            tvContent.text = note.content
-            tvDate.text = note.timeStamp
+        fun bind(item: Note, isSelected: Boolean = false) {
+            binding.apply {
+                tvTitle.text = item.title
+                tvContent.text = item.content
+                tvDate.text = item.timeStamp
 
-            //update selection state of the recycler view
-            itemView.isActivated = isSelected
-            notesCard.isChecked = isSelected
+                //update selection state of the recycler view
+                itemView.isActivated = isSelected
+                notesCard.isChecked = isSelected
 
-            itemView.tag = note.noteId
+                //tag each item by its unique identifier
+                itemView.tag = item.noteId
+
+                root.setOnClickListener {
+                    if (selectionTracker.isSelected(item.noteId)) {
+                        selectionTracker.deselect(item.noteId)
+                    } else {
+                        if (selectionTracker.hasSelection()) {
+                            return@setOnClickListener
+                        }
+                        selectionTracker.select(item.noteId)
+                        onItemClickListener.onItemClick(item)
+                    }
+                }
+                root.setOnLongClickListener {
+                    onItemLongClickListener.onItemLongClick(item)
+
+                    true
+                }
+
+                notesCard.isChecked = selectionTracker.isSelected(item.noteId)
+            }
+
+
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
@@ -69,32 +89,8 @@ class RvNotesAdapter(
     override fun onBindViewHolder(holder: RvNotesViewHolder, position: Int) {
 
         val item = asyncListDiffer.currentList[position]
-
         //bind item data and selection state
         holder.bind(item)
-
-        holder.itemView.setOnClickListener {
-            if (selectionTracker.isSelected(item.noteId)) {
-                selectionTracker.deselect(item.noteId)
-            } else {
-                if (selectionTracker.hasSelection()) {
-                    return@setOnClickListener
-                }
-                selectionTracker.select(item.noteId)
-                onItemClickListener.onItemClick(item)
-            }
-
-
-        }
-
-        holder.itemView.setOnLongClickListener {
-            onItemLongClickListener.onItemLongClick(item)
-
-            true
-        }
-
-        holder.notesCard.isChecked = selectionTracker.isSelected(item.noteId)
-
     }
 
     fun getItem(position: Int): Note = asyncListDiffer.currentList[position]
