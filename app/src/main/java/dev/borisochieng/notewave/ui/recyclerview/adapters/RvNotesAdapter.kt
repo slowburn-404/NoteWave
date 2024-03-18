@@ -6,22 +6,20 @@ import android.widget.TextView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
-import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemClickListener
+import dev.borisochieng.notewave.ui.recyclerview.OnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import dev.borisochieng.notewave.databinding.ItemNotesBinding
 import dev.borisochieng.notewave.data.models.Note
-import dev.borisochieng.notewave.ui.recyclerview.RVNotesListOnItemLongClickListener
+import dev.borisochieng.notewave.ui.recyclerview.OnItemLongClickListener
+import dev.borisochieng.notewave.utils.RVDiffUtil
 
 class RvNotesAdapter(
-    //private var notesList: MutableList<Note> = mutableListOf(),
-    private val onItemClickListener: RVNotesListOnItemClickListener,
-    private val onItemLongClickListener: RVNotesListOnItemLongClickListener
+    private val onItemClickListener: OnItemClickListener,
+    private val onItemLongClickListener: OnItemLongClickListener
 ) : RecyclerView.Adapter<RvNotesAdapter.RvNotesViewHolder>() {
     lateinit var selectionTracker: SelectionTracker<Long>
-
 
     inner class RvNotesViewHolder(binding: ItemNotesBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -51,19 +49,9 @@ class RvNotesAdapter(
                     return (itemView.tag as? Long) ?: RecyclerView.NO_ID
                 }
             }
-
-    }
-    private val diffUtil = object: DiffUtil.ItemCallback<Note>() {
-        override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
-            return oldItem == newItem
-        }
-
-        override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
-            return oldItem.noteId == newItem.noteId
-        }
     }
 
-    private val asyncListDiffer =  AsyncListDiffer(this, diffUtil)
+    private val asyncListDiffer = AsyncListDiffer(this, RVDiffUtil())
 
     fun updateList(newList: MutableList<Note>) {
         asyncListDiffer.submitList(newList)
@@ -109,12 +97,11 @@ class RvNotesAdapter(
 
     }
 
-    fun getItem(position: Int) = asyncListDiffer.currentList[position]
-    fun getPosition(key: Long) = asyncListDiffer.currentList.indexOfFirst { it.noteId == key }
+    fun getItem(position: Int): Note = asyncListDiffer.currentList[position]
 
-    override fun getItemId(position: Int): Long {
-        return asyncListDiffer.currentList[position].noteId
-    }
+    fun getPosition(key: Long): Int = asyncListDiffer.currentList.indexOfFirst { it.noteId == key }
+
+    override fun getItemId(position: Int): Long = asyncListDiffer.currentList[position].noteId
 
     override fun getItemCount() = asyncListDiffer.currentList.size
 

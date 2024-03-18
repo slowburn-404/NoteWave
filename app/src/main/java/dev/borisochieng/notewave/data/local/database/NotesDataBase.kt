@@ -17,7 +17,7 @@ import kotlin.concurrent.Volatile
     version = 4,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 3, to = 4)
+        AutoMigration(from = 2, to = 3)
     ]
 )
 @TypeConverters(DateConverterUtil::class)
@@ -35,7 +35,7 @@ abstract class NotesDataBase : RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext, NotesDataBase::class.java, "notes_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
 
                 //return instance

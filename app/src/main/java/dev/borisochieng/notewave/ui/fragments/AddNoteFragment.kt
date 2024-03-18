@@ -1,7 +1,6 @@
 package dev.borisochieng.notewave.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.ActionMode.Callback
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,20 +10,22 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ActionMode
+import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
+import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.databinding.FragmentAddNoteBinding
 import dev.borisochieng.notewave.data.models.Note
-import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
 import dev.borisochieng.notewave.utils.DateUtil
-import dev.borisochieng.notewave.ui.activities.MainActivity
+import dev.borisochieng.notewave.ui.viewmodels.AddNoteViewModel
+import dev.borisochieng.notewave.ui.viewmodels.AddNoteViewModelFactory
 
 class AddNoteFragment : Fragment() {
 
@@ -41,7 +42,10 @@ class AddNoteFragment : Fragment() {
     private lateinit var appBarAddNote: AppBarLayout
 
     private var actionMode: ActionMode? = null
-     private lateinit var notesViewModel: NotesViewModel
+
+    private val addNoteViewModel: AddNoteViewModel by viewModels {
+        AddNoteViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -49,7 +53,7 @@ class AddNoteFragment : Fragment() {
         _binding = FragmentAddNoteBinding.inflate(inflater, container, false)
         initViews()
 
-        notesViewModel = (activity as MainActivity).notesViewModel
+
 
         mutateViewsBasedOnETFocus()
 
@@ -84,7 +88,7 @@ class AddNoteFragment : Fragment() {
         }
 
         textInputEditTextTitle.setOnFocusChangeListener { _, hasFocus ->
-            if(hasFocus) {
+            if (hasFocus) {
                 textInputEditTextTitle.hint = null
 
                 showActionMode()
@@ -94,8 +98,7 @@ class AddNoteFragment : Fragment() {
 
 
     private fun sendNotesToViewModel(note: Note) {
-        notesViewModel.addNewNote(note)
-        Log.d("Note to viewmodel:", note.toString())
+        addNoteViewModel.addNewNote(note)
     }
 
     private fun showActionMode() {
@@ -115,14 +118,12 @@ class AddNoteFragment : Fragment() {
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
                     R.id.save -> {
-                        // Handle save icon press
-                        textViewDateUpdate.text = DateUtil.getCurrentDate()
                         val note = prepareDataForViewModel()
+                        textViewDateUpdate.text =  note.timeStamp
                         sendNotesToViewModel(note)
-
-                        Log.d("Note from edit text", note.toString())
-                        textInputEditTextAddNote.clearFocus()
-                        Snackbar.make(binding.root, "Note saved.", Snackbar.LENGTH_SHORT).show()
+                        //textInputEditTextAddNote.clearFocus()
+                        navController.popBackStack()
+                        Toast.makeText(requireContext(), "Note saved", Toast.LENGTH_SHORT).show()
                         mode?.finish()
 
                         true
@@ -137,16 +138,12 @@ class AddNoteFragment : Fragment() {
             }
         }
 
-        //actionMode = materialToolbarAddNote.startActionMode(callback)
-        //actionMode = appBarAddNote.startActionMode(callback)
         actionMode = materialToolbarAddNote.startActionMode(callback)
     }
 
     private fun prepareDataForViewModel(): Note {
         val noteContent = textInputEditTextAddNote.text?.trim().toString()
         val noteTitle = textInputEditTextTitle.text?.trim().toString()
-
-        Log.d("Note Title To ViewModel", noteTitle)
 
         return Note(0, noteTitle, noteContent)
 

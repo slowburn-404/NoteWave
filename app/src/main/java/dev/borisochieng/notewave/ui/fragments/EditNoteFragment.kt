@@ -1,5 +1,6 @@
 package dev.borisochieng.notewave.ui.fragments
 
+import android.health.connect.datatypes.units.Length
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
@@ -10,6 +11,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -20,11 +23,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
+import dev.borisochieng.notewave.NoteApplication
 import dev.borisochieng.notewave.R
 import dev.borisochieng.notewave.databinding.FragmentEditNoteBinding
 import dev.borisochieng.notewave.data.models.Note
-import dev.borisochieng.notewave.ui.activities.MainActivity
-import dev.borisochieng.notewave.ui.viewmodels.NotesViewModel
+import dev.borisochieng.notewave.ui.viewmodels.EditNoteViewModel
+import dev.borisochieng.notewave.ui.viewmodels.EditNoteViewModelFactory
 import kotlinx.coroutines.launch
 
 
@@ -39,7 +43,9 @@ class EditNoteFragment : Fragment() {
 
     private var actionMode: ActionMode? = null
 
-    private lateinit var notesViewModel: NotesViewModel
+    private val editNoteViewModel: EditNoteViewModel by viewModels{
+        EditNoteViewModelFactory((requireActivity().application as NoteApplication).notesRepository)
+    }
 
     private lateinit var textInputLayoutTitle: TextInputLayout
     private lateinit var textInputEditTextTitle: TextInputEditText
@@ -55,7 +61,7 @@ class EditNoteFragment : Fragment() {
         _binding = FragmentEditNoteBinding.inflate(layoutInflater, container, false)
         initViews()
 
-        notesViewModel = (activity as MainActivity).notesViewModel
+
 
         binding.materialToolBarEditNote.apply {
             setNavigationOnClickListener {
@@ -66,6 +72,7 @@ class EditNoteFragment : Fragment() {
                     R.id.delete_note -> {
                        //TODO("Add snackbar and material dialog")
                         deleteNote(prepareDataForViewModel())
+                        Toast.makeText(requireContext(), "Note deleted", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
 
                         true
@@ -93,15 +100,15 @@ class EditNoteFragment : Fragment() {
     }
 
     private fun updateViewModel(note: Note) {
-        notesViewModel.editNote(note)
+        editNoteViewModel.editNote(note)
     }
 
     private fun addNoteToEditText() {
         val noteIdFromNotesListFragment = navArgs.noteId
 
         lifecycleScope.launch {
-            notesViewModel.filterNotesByID(noteIdFromNotesListFragment)
-                .observe(requireActivity(), Observer { selectedNote ->
+            editNoteViewModel.getNoteByID(noteIdFromNotesListFragment)
+                .observe(viewLifecycleOwner, Observer { selectedNote ->
                     selectedNote?.let {
                         Log.d("Selected Note", selectedNote.toString())
                         textInputEditTextTitle.setText(selectedNote.title)
@@ -119,8 +126,6 @@ class EditNoteFragment : Fragment() {
     private fun mutateViewsBasedOnETFocus() {
         textInputEditTextTitle.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                textInputLayoutTitle.hint = null
-
                 showActionMode()
             }
             //redraw menu
@@ -156,7 +161,6 @@ class EditNoteFragment : Fragment() {
                     R.id.save -> {
                         // Handle save icon press
                         val note = prepareDataForViewModel()
-                        Log.d("Edited Note", note.toString())
                         updateViewModel(note)
                         Snackbar.make(binding.root, "Note saved.", Snackbar.LENGTH_SHORT).show()
                         mode?.finish()
@@ -185,7 +189,7 @@ class EditNoteFragment : Fragment() {
     }
 
     private fun deleteNote(note: Note) {
-        notesViewModel.deleteNote(note)
+        editNoteViewModel.deleteNote(note)
     }
 
     override fun onDestroy() {

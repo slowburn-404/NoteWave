@@ -48,8 +48,7 @@
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/ic_close</item>
-        <item name="actionModeTheme">@style/AppTheme</item>
-        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="actionModeStyle">@style/customActionMode</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowLightStatusBar">false</item>
@@ -60,23 +59,11 @@
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
-    <!--Button-->
-    <style name="Widget.App.Button" parent="Widget.Material3.Button">
-        <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
-        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
-    </style>
 
-    <style name="Theme.App" parent="AppTheme">
-        <item name="textAppearanceLabelLarge">@style/TextAppearance.App.Button</item>
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
-    </style>
-
-    <style name="TextAppearance.App.Button" parent="TextAppearance.Material3.LabelLarge">
-        <item name="fontFamily">@font/inter_medium</item>
-        <item name="android:fontFamily">@font/inter_medium</item>
-    </style>
-
-    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
-        <item name="cornerSize">10dp</item>
+    <!-- Action Mode -->
+    <style name="customActionMode" parent="Widget.Material3.ActionMode">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

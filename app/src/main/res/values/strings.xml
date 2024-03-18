@@ -44,6 +44,8 @@
         <item quantity="other">Notes deleted</item>
     </plurals>
     <string name="notes_deleted">Notes deleted</string>
+    <string name="search_notes">Search Notes</string>
+    <string name="no_note_selected">No note selected</string>
     <plurals name="selected_items">
         <item quantity="one">%d Item selected</item>
         <item quantity="other">%d Items selected</item>
