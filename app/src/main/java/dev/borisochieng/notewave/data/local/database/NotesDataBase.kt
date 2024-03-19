@@ -14,10 +14,11 @@ import kotlin.concurrent.Volatile
 
 @Database(
     entities = [Note::class],
-    version = 4,
+    version = NotesDataBase.LATEST_VERSION,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 2, to = 3)
+        AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4)
     ]
 )
 @TypeConverters(DateConverterUtil::class)
@@ -26,6 +27,7 @@ abstract class NotesDataBase : RoomDatabase() {
     abstract fun notesDAO(): NotesDao
 
     companion object {
+        const val LATEST_VERSION = 4
         @Volatile
         private var INSTANCE: NotesDataBase? = null
 
@@ -35,7 +37,7 @@ abstract class NotesDataBase : RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext, NotesDataBase::class.java, "notes_database"
-                ).fallbackToDestructiveMigration().build()
+                ).build()
                 INSTANCE = instance
 
                 //return instance
@@ -43,6 +45,7 @@ abstract class NotesDataBase : RoomDatabase() {
             }
 
         }
+
     }
 
 }
